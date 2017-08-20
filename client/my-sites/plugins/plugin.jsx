@@ -31,12 +31,13 @@ import {
 	canJetpackSiteManage,
 	getRawSite,
 	isJetpackSite,
-	isRequestingSites
 } from 'state/sites/selectors';
 import {
 	canCurrentUser,
 	canCurrentUserManagePlugins,
-	isSiteAutomatedTransfer } from 'state/selectors';
+	hasLoadedSites,
+	isSiteAutomatedTransfer,
+} from 'state/selectors';
 import NonSupportedJetpackVersionNotice from './not-supported-jetpack-version';
 import NoPermissionsError from './no-permissions-error';
 
@@ -324,7 +325,7 @@ const SinglePlugin = React.createClass( {
 	render() {
 		const { selectedSite } = this.props;
 
-		if ( ! this.props.isRequestingSites && ! this.props.userCanManagePlugins ) {
+		if ( this.props.hasLoadedSites && ! this.props.userCanManagePlugins ) {
 			return <NoPermissionsError title={ this.state.pageTitle } />;
 		}
 
@@ -412,7 +413,7 @@ export default connect(
 			isJetpackSite: siteId => isJetpackSite( state, siteId ),
 			canJetpackSiteManage: siteId => canJetpackSiteManage( state, siteId ),
 			isSiteAutomatedTransfer: isSiteAutomatedTransfer( state, get( selectedSite, 'ID' ) ),
-			isRequestingSites: isRequestingSites( state ),
+			hasLoadedSites: hasLoadedSites( state ),
 			userCanManagePlugins: ( selectedSiteId
 				? canCurrentUser( state, selectedSiteId, 'manage_options' )
 				: canCurrentUserManagePlugins( state ) ),

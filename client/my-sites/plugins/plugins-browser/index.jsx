@@ -25,12 +25,11 @@ import infiniteScroll from 'lib/mixins/infinite-scroll';
 import JetpackManageErrorPage from 'my-sites/jetpack-manage-error-page';
 import { hasTouch } from 'lib/touch-detect';
 import { recordTracksEvent } from 'state/analytics/actions';
-import { canCurrentUser } from 'state/selectors';
+import { canCurrentUser, hasLoadedSites } from 'state/selectors';
 import { getSelectedSiteId } from 'state/ui/selectors';
 import {
 	canJetpackSiteManage,
 	isJetpackSite,
-	isRequestingSites
 } from 'state/sites/selectors';
 import NonSupportedJetpackVersionNotice from 'my-sites/plugins/not-supported-jetpack-version';
 import NoPermissionsError from 'my-sites/plugins/no-permissions-error';
@@ -300,7 +299,7 @@ const PluginsBrowser = React.createClass( {
 	},
 
 	render() {
-		if ( ! this.props.isRequestingSites && this.props.noPermissionsError ) {
+		if ( this.props.hasLoadedSites && this.props.noPermissionsError ) {
 			return <NoPermissionsError title={ this.props.translate( 'Plugin Browser', { textOnly: true } ) } />;
 		}
 
@@ -324,8 +323,8 @@ export default connect(
 	state => {
 		const selectedSiteId = getSelectedSiteId( state );
 		return {
+			hasLoadedSites: hasLoadedSites( state ),
 			jetpackManageError: !! isJetpackSite( state, selectedSiteId ) && ! canJetpackSiteManage( state, selectedSiteId ),
-			isRequestingSites: isRequestingSites( state ),
 			noPermissionsError: !! selectedSiteId && ! canCurrentUser( state, selectedSiteId, 'manage_options' ),
 			selectedSiteId,
 		};

@@ -30,7 +30,8 @@ import HappyChatButton from 'components/happychat/button';
 
 // Redux actions & selectors
 import { getSelectedSite, getSelectedSiteId } from 'state/ui/selectors';
-import { isJetpackSite, isRequestingSites, getRawSite } from 'state/sites/selectors';
+import { hasLoadedSites } from 'state/selectors';
+import { isJetpackSite, getRawSite } from 'state/sites/selectors';
 import { getPlugin } from 'state/plugins/wporg/selectors';
 import { fetchPluginData } from 'state/plugins/wporg/actions';
 import { requestSites } from 'state/sites/actions';
@@ -574,7 +575,7 @@ class JetpackThankYouCard extends Component {
 
 	render() {
 		const site = this.props.selectedSite;
-		if ( ! site && this.props.isRequestingSites ) {
+		if ( ! site && ! this.props.hasLoadedSites ) {
 			return (
 				<div className="checkout-thank-you__jetpack">
 					<PlanThankYouCard />
@@ -635,7 +636,7 @@ export default connect(
 			activePlugin: getActivePlugin( state, siteId, whitelist ),
 			nextPlugin: getNextPlugin( state, siteId, whitelist ),
 			selectedSite: selectedSite,
-			isRequestingSites: isRequestingSites( state ),
+			hasLoadedSites: hasLoadedSites( state ),
 			siteId,
 			planFeatures,
 			planClass

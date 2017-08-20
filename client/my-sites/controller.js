@@ -17,7 +17,6 @@ import {
 	getSite,
 	isJetpackModuleActive,
 	isJetpackSite,
-	isRequestingSites,
 } from 'state/sites/selectors';
 import { getSelectedSite, getSelectedSiteId } from 'state/ui/selectors';
 import {
@@ -39,6 +38,7 @@ import {
 	getSiteId,
 	getSites,
 	getVisibleSites,
+	hasLoadedSites,
 	isDomainOnlySite,
 } from 'state/selectors';
 import {
@@ -332,9 +332,8 @@ module.exports = {
 				return;
 			}
 		} else {
-			// if sites has fresh data and siteId is invalid
-			// redirect to allSitesPath
-			if ( ! isRequestingSites( getState() ) ) {
+			// if siteId is invalid and sites are loaded redirect to allSitesPath
+			if ( hasLoadedSites( getState() ) ) {
 				return page.redirect( allSitesPath );
 			}
 

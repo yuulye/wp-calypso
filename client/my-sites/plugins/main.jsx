@@ -31,13 +31,13 @@ import NonSupportedJetpackVersionNotice from './not-supported-jetpack-version';
 import NoPermissionsError from './no-permissions-error';
 import {
 	canCurrentUser,
-	canCurrentUserManagePlugins
+	canCurrentUserManagePlugins,
+	hasLoadedSites,
 } from 'state/selectors';
 import {
 	canJetpackSiteManage,
 	canJetpackSiteUpdateFiles,
 	isJetpackSite,
-	isRequestingSites
 } from 'state/sites/selectors';
 import {
 	getSelectedSite,
@@ -348,7 +348,7 @@ const PluginsMain = React.createClass( {
 			selectedSiteId,
 		} = this.props;
 
-		if ( ! this.props.isRequestingSites && ! this.props.userCanManagePlugins ) {
+		if ( this.props.hasLoadedSites && ! this.props.userCanManagePlugins ) {
 			return <NoPermissionsError title={ this.props.translate( 'Plugins', { textOnly: true } ) } />;
 		}
 
@@ -444,7 +444,7 @@ export default connect(
 			canJetpackSiteUpdateFiles: siteId => canJetpackSiteUpdateFiles( state, siteId ),
 			isJetpackSite: siteId => isJetpackSite( state, siteId ),
 			wporgPlugins: state.plugins.wporg.items,
-			isRequestingSites: isRequestingSites( state ),
+			hasLoadedSites: hasLoadedSites( state ),
 			userCanManagePlugins: ( selectedSiteId
 				? canCurrentUser( state, selectedSiteId, 'manage_options' )
 				: canCurrentUserManagePlugins( state ) )

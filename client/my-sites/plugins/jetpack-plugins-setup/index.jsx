@@ -29,8 +29,8 @@ import utils from 'lib/site/utils';
 
 // Redux actions & selectors
 import { getSelectedSite, getSelectedSiteId } from 'state/ui/selectors';
-import { isJetpackSite, isRequestingSites, getRawSite } from 'state/sites/selectors';
-import { hasInitializedSites } from 'state/selectors';
+import { isJetpackSite, getRawSite } from 'state/sites/selectors';
+import { hasInitializedSites, hasLoadedSites } from 'state/selectors';
 import { getPlugin } from 'state/plugins/wporg/selectors';
 import { fetchPluginData } from 'state/plugins/wporg/actions';
 import { requestSites } from 'state/sites/actions';
@@ -480,7 +480,7 @@ const PlansSetup = React.createClass( {
 		} = this.props;
 		const site = this.props.selectedSite;
 
-		if ( ! site && ( this.props.isRequestingSites || ! sitesInitialized ) ) {
+		if ( ! site && ( ! this.props.hasLoadedSites || ! sitesInitialized ) ) {
 			return this.renderPlaceholder();
 		}
 
@@ -493,7 +493,7 @@ const PlansSetup = React.createClass( {
 		}
 
 		if ( site &&
-			! this.props.isRequestingSites &&
+			this.props.hasLoadedSites &&
 			! this.props.isRequesting &&
 			! PluginsStore.isFetchingSite( site ) &&
 			! this.props.plugins.length ) {
@@ -563,7 +563,7 @@ export default connect(
 			activePlugin: getActivePlugin( state, siteId, whitelist ),
 			nextPlugin: getNextPlugin( state, siteId, whitelist ),
 			selectedSite: selectedSite,
-			isRequestingSites: isRequestingSites( state ),
+			hasLoadedSites: hasLoadedSites( state ),
 			sitesInitialized: hasInitializedSites( state ),
 			siteId
 		};
