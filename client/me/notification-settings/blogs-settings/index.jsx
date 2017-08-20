@@ -10,8 +10,7 @@ import Immutable from 'immutable';
 /**
  * Internal dependencies
  */
-import { getSites } from 'state/selectors';
-import { isRequestingSites } from 'state/sites/selectors';
+import { getSites, hasLoadedSites } from 'state/selectors';
 import EmptyContentComponent from 'components/empty-content';
 import Blog from './blog';
 import InfiniteList from 'components/infinite-list';
@@ -25,7 +24,7 @@ const getItemRef = ( { ID } ) => `blog-${ ID }`;
 class BlogsSettings extends Component {
 	static propTypes = {
 		sites: PropTypes.array.isRequired,
-		requestingSites: PropTypes.bool.isRequired,
+		hasLoadedSites: PropTypes.bool.isRequired,
 		settings: PropTypes.instanceOf( Immutable.List ),
 		hasUnsavedChanges: PropTypes.bool.isRequired,
 		onToggle: PropTypes.func.isRequired,
@@ -34,13 +33,13 @@ class BlogsSettings extends Component {
 	};
 
 	render() {
-		const { sites, requestingSites, translate } = this.props;
+		const { sites, translate } = this.props;
 
 		if ( ! sites || ! this.props.settings ) {
 			return <Placeholder />;
 		}
 
-		if ( sites.length === 0 && ! requestingSites ) {
+		if ( sites.length === 0 && this.props.hasLoadedSites ) {
 			return <EmptyContentComponent
 				title={ translate( 'You don\'t have any WordPress sites yet.' ) }
 				line={ translate( 'Would you like to start one?' ) }
@@ -86,7 +85,7 @@ class BlogsSettings extends Component {
 
 const mapStateToProps = state => ( {
 	sites: getSites( state ),
-	requestingSites: isRequestingSites( state ),
+	hasLoadedSites: hasLoadedSites( state ),
 } );
 
 export default connect( mapStateToProps )( localize( BlogsSettings ) );

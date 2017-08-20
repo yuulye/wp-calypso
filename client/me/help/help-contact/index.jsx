@@ -40,8 +40,9 @@ import {
 	getCurrentUserSiteCount,
 } from 'state/current-user/selectors';
 import { askQuestion as askDirectlyQuestion, initialize as initializeDirectly } from 'state/help/directly/actions';
-import { isCurrentPlanPaid, isRequestingSites } from 'state/sites/selectors';
+import { isCurrentPlanPaid } from 'state/sites/selectors';
 import {
+	hasLoadedSites,
 	hasUserAskedADirectlyQuestion,
 	isDirectlyFailed,
 	isDirectlyReady,
@@ -574,7 +575,7 @@ const HelpContact = React.createClass( {
 	shouldShowPreloadForm: function() {
 		const waitingOnDirectly = this.getSupportVariation() === SUPPORT_DIRECTLY && ! this.props.isDirectlyReady;
 
-		return this.props.isRequestingSites || ! this.hasDataToDetermineVariation() || waitingOnDirectly;
+		return ! this.props.hasLoadedSites || ! this.hasDataToDetermineVariation() || waitingOnDirectly;
 	},
 
 	/**
@@ -692,7 +693,7 @@ export default connect(
 			ticketSupportEligible: isTicketSupportEligible( state ),
 			ticketSupportRequestError: getTicketSupportRequestError( state ),
 			hasMoreThanOneSite: getCurrentUserSiteCount( state ) > 1,
-			isRequestingSites: isRequestingSites( state ),
+			hasLoadedSites: hasLoadedSites( state ),
 			isSelectedHelpSiteOnPaidPlan: isCurrentPlanPaid( state, helpSelectedSiteId ),
 		};
 	},

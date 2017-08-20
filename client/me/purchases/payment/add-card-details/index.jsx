@@ -14,7 +14,7 @@ import { getByPurchaseId, hasLoadedUserPurchasesFromServer } from 'state/purchas
 import { getSelectedSite as getSelectedSiteSelector } from 'state/ui/selectors';
 import HeaderCake from 'components/header-cake';
 import { isDataLoading, recordPageView } from 'me/purchases/utils';
-import { isRequestingSites } from 'state/sites/selectors';
+import { hasLoadedSites } from 'state/selectors';
 import Main from 'components/main';
 import PurchaseCardDetails from 'me/purchases/components/purchase-card-details';
 import QueryUserPurchases from 'components/data/query-user-purchases';
@@ -72,7 +72,7 @@ class AddCardDetails extends PurchaseCardDetails {
 
 const mapStateToProps = ( state, { purchaseId } ) => {
 	return {
-		hasLoadedSites: ! isRequestingSites( state ),
+		hasLoadedSites: hasLoadedSites( state ),
 		hasLoadedUserPurchasesFromServer: hasLoadedUserPurchasesFromServer( state ),
 		selectedPurchase: getByPurchaseId( state, purchaseId ),
 		selectedSite: getSelectedSiteSelector( state ),

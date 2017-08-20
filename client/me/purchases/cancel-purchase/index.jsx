@@ -32,7 +32,7 @@ import { getSelectedSite as getSelectedSiteSelector } from 'state/ui/selectors';
 import HeaderCake from 'components/header-cake';
 import { isDataLoading } from 'me/purchases/utils';
 import { isDomainRegistration } from 'lib/products-values';
-import { isRequestingSites } from 'state/sites/selectors';
+import { hasLoadedSites } from 'state/selectors';
 import Main from 'components/main';
 import paths from '../paths';
 import QueryUserPurchases from 'components/data/query-user-purchases';
@@ -178,7 +178,7 @@ const CancelPurchase = React.createClass( {
 } );
 
 export default connect( ( state, props ) => ( {
-	hasLoadedSites: ! isRequestingSites( state ),
+	hasLoadedSites: hasLoadedSites( state ),
 	hasLoadedUserPurchasesFromServer: hasLoadedUserPurchasesFromServer( state ),
 	selectedPurchase: getByPurchaseId( state, props.purchaseId ),
 	selectedSite: getSelectedSiteSelector( state ),

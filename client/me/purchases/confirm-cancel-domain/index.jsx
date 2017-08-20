@@ -27,7 +27,7 @@ import { getName as getDomainName } from 'lib/purchases';
 import { getPurchase, goToCancelPurchase, isDataLoading, recordPageView } from '../utils';
 import { getSelectedSite as getSelectedSiteSelector } from 'state/ui/selectors';
 import { isDomainRegistration } from 'lib/products-values';
-import { isRequestingSites } from 'state/sites/selectors';
+import { hasLoadedSites } from 'state/selectors';
 import Main from 'components/main';
 import notices from 'notices';
 import paths from 'me/purchases/paths';
@@ -309,7 +309,7 @@ export default connect(
 		const selectedSite = getSelectedSiteSelector( state );
 
 		return {
-			hasLoadedSites: ! isRequestingSites( state ),
+			hasLoadedSites: hasLoadedSites( state ),
 			hasLoadedUserPurchasesFromServer: hasLoadedUserPurchasesFromServer( state ),
 			isDomainOnlySite: isDomainOnly( state, selectedSite && selectedSite.ID ),
 			selectedPurchase: getByPurchaseId( state, props.purchaseId ),
