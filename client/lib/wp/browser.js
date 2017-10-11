@@ -17,12 +17,14 @@ import wpcomSupport from 'lib/wp/support';
 import { injectLocalization } from './localization';
 import { injectGuestSandboxTicketHandler } from './handlers/guest-sandbox-ticket';
 
+import oauthToken from 'lib/oauth-token';
+import wpcomPKG from 'wpcom/package';
+
 const addSyncHandlerWrapper = config.isEnabled( 'sync-handler' );
 let wpcom;
 
 if ( config.isEnabled( 'oauth' ) ) {
-	const oauthToken = require( 'lib/oauth-token' );
-	const requestHandler = addSyncHandlerWrapper
+    const requestHandler = addSyncHandlerWrapper
 		? new SyncHandler( require( 'lib/wpcom-xhr-wrapper' ) )
 		: require( 'lib/wpcom-xhr-wrapper' );
 
@@ -58,8 +60,7 @@ if ( config.isEnabled( 'support-user' ) ) {
 
 // expose wpcom global var only in development
 if ( 'development' === config( 'env' ) ) {
-	const wpcomPKG = require( 'wpcom/package' );
-	window.wpcom = wpcom;
+    window.wpcom = wpcom;
 	window.wpcom.__version = wpcomPKG.version;
 }
 

@@ -24,6 +24,15 @@ import { canCurrentUser } from 'state/selectors';
 import { getSelectedSiteId, getSelectedSite, getSelectedSiteSlug } from 'state/ui/selectors';
 import { getCurrentUser } from 'state/current-user/selectors';
 
+import CartData from 'components/data/cart';
+import DomainSearch from './domain-search';
+import CartData from 'components/data/cart';
+import SiteRedirect from './domain-search/site-redirect';
+import CartData from 'components/data/cart';
+import MapDomain from 'my-sites/domains/map-domain';
+import CartData from 'components/data/cart';
+import GoogleApps from 'components/upgrades/google-apps';
+
 /**
  * Module variables
  */
@@ -46,9 +55,7 @@ const domainsAddRedirectHeader = ( context, next ) => {
 };
 
 const domainSearch = context => {
-	const CartData = require( 'components/data/cart' );
-	const DomainSearch = require( './domain-search' );
-	const basePath = route.sectionify( context.path );
+    const basePath = route.sectionify( context.path );
 
 	// FIXME: Auto-converted from the Flux setTitle action. Please use <DocumentHead> instead.
 	context.store.dispatch( setTitle( i18n.translate( 'Domain Search' ) ) );
@@ -70,9 +77,7 @@ const domainSearch = context => {
 };
 
 const siteRedirect = context => {
-	const CartData = require( 'components/data/cart' );
-	const SiteRedirect = require( './domain-search/site-redirect' );
-	const basePath = route.sectionify( context.path );
+    const basePath = route.sectionify( context.path );
 
 	// FIXME: Auto-converted from the Flux setTitle action. Please use <DocumentHead> instead.
 	context.store.dispatch( setTitle( i18n.translate( 'Redirect a Site' ) ) );
@@ -89,9 +94,7 @@ const siteRedirect = context => {
 };
 
 const mapDomain = context => {
-	const CartData = require( 'components/data/cart' );
-	const MapDomain = require( 'my-sites/domains/map-domain' ).default;
-	const basePath = route.sectionify( context.path );
+    const basePath = route.sectionify( context.path );
 
 	// FIXME: Auto-converted from the Flux setTitle action. Please use <DocumentHead> instead.
 	context.store.dispatch( setTitle( i18n.translate( 'Map a Domain' ) ) );
@@ -109,10 +112,7 @@ const mapDomain = context => {
 };
 
 const googleAppsWithRegistration = context => {
-	const CartData = require( 'components/data/cart' );
-	const GoogleApps = require( 'components/upgrades/google-apps' );
-
-	// FIXME: Auto-converted from the Flux setTitle action. Please use <DocumentHead> instead.
+    // FIXME: Auto-converted from the Flux setTitle action. Please use <DocumentHead> instead.
 	context.store.dispatch(
 		setTitle(
 			i18n.translate( 'Register %(domain)s', {

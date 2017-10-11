@@ -13,6 +13,8 @@ import { tracks } from 'lib/analytics';
 import { READER_POSTS_RECEIVE } from 'state/action-types';
 import wp from 'lib/wp';
 
+import { stub } from 'sinon';
+
 const undocumented = wp.undocumented;
 
 jest.mock( 'lib/analytics', () => ( {
@@ -22,8 +24,7 @@ jest.mock( 'lib/analytics', () => ( {
 } ) );
 
 jest.mock( 'lib/wp', () => {
-	const { stub } = require( 'sinon' );
-	const readFeedPost = stub();
+    const readFeedPost = stub();
 	const readSitePost = stub();
 
 	return {

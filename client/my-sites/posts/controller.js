@@ -24,21 +24,14 @@ import { getSelectedSiteId } from 'state/ui/selectors';
 import { isJetpackSite, isSingleUserSite } from 'state/sites/selectors';
 import { getCurrentUserId } from 'state/current-user/selectors';
 
+import Posts from 'my-sites/posts/main';
+
 export default {
 	posts: function( context ) {
 		const state = context.store.getState();
 		const siteId = getSelectedSiteId( state );
 
-		var Posts = require( 'my-sites/posts/main' ),
-			siteID = route.getSiteFragment( context.path ),
-			author = context.params.author === 'my' ? getCurrentUserId( state ) : null,
-			statusSlug = author ? context.params.status : context.params.author,
-			search = context.query.s,
-			category = context.query.category,
-			tag = context.query.tag,
-			basePath = route.sectionify( context.path ),
-			analyticsPageTitle = 'Blog Posts',
-			baseAnalyticsPath;
+		var siteID = route.getSiteFragment( context.path ), author = context.params.author === 'my' ? getCurrentUserId( state ) : null, statusSlug = author ? context.params.status : context.params.author, search = context.query.s, category = context.query.category, tag = context.query.tag, basePath = route.sectionify( context.path ), analyticsPageTitle = 'Blog Posts', baseAnalyticsPath;
 
 		function shouldRedirectMyPosts() {
 			if ( ! author ) {

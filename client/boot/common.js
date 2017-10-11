@@ -24,6 +24,8 @@ import { setLocale, setLocaleRawData } from 'state/ui/language/actions';
 import { isDefaultLocale } from 'lib/i18n-utils';
 import getCurrentLocaleSlug from 'state/selectors/get-current-locale-slug';
 
+import sections from 'sections';
+
 const debug = debugFactory( 'calypso' );
 
 const switchUserLocale = ( currentUser, reduxStore ) => {
@@ -79,7 +81,7 @@ const setupContextMiddleware = reduxStore => {
 const loadSectionsMiddleware = () => require( 'sections' ).load();
 
 const loggedOutMiddleware = currentUser => {
-	if ( currentUser.get() ) {
+    if ( currentUser.get() ) {
 		return;
 	}
 
@@ -97,7 +99,6 @@ const loggedOutMiddleware = currentUser => {
 		} );
 	}
 
-	const sections = require( 'sections' );
 	const validSections = sections.get().reduce( ( acc, section ) => {
 		return section.enableLoggedOut ? acc.concat( section.paths ) : acc;
 	}, [] );

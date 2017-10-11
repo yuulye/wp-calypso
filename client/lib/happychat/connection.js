@@ -23,7 +23,8 @@ import {
 	setReconnecting,
 } from 'state/happychat/actions';
 
-const debug = require( 'debug' )( 'calypso:happychat:connection' );
+import debugFactory from 'debug';
+const debug = debugFactory('calypso:happychat:connection');
 
 const buildConnection = socket =>
 	isString( socket )
