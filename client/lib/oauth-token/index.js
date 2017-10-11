@@ -41,3 +41,9 @@ export function clearToken() {
 		document.cookie = cookie.serialize( TOKEN_NAME, false, { maxAge: -1 } );
 	}
 }
+
+export default {
+	getToken,
+	setToken,
+	clearToken,
+};

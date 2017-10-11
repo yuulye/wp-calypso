@@ -14,16 +14,14 @@ import { pauseAll, resumePaused } from 'lib/data-poller';
 
 import sitesFactory from 'lib/sites-list';
 const sites = sitesFactory();
-import sitesFactory from 'lib/sites-list';
-const sites = sitesFactory();
 
 const pauseFetching = () => {
-    pauseAll();
+	pauseAll();
 	sites.pauseFetching();
 };
 
 const resumeFetching = () => {
-    resumePaused();
+	resumePaused();
 	sites.resumeFetching();
 };
 
