@@ -1,10 +1,7 @@
 /** @format */
 // Initialize polyfills before any dependencies are loaded
 import './polyfills';
-
-if ( process.env.NODE_ENV === 'development' ) {
-	require( 'lib/wrap-es6-functions' )();
-}
+import 'lib/wrap-es6-functions';
 
 /**
  * External dependencies
@@ -20,13 +17,15 @@ import { configureReduxStore, locales, setupMiddlewares, utils } from './common'
 import createReduxStoreFromPersistedInitialState from 'state/initial-state';
 import detectHistoryNavigation from 'lib/detect-history-navigation';
 import userFactory from 'lib/user';
+import * as wordpressProject from './project/wordpress-com';
 
 const debug = debugFactory( 'calypso' );
+const projects = { 'wordpress-com': wordpressProject };
 
 const boot = currentUser => {
 	debug( "Starting Calypso. Let's do this." );
 
-	const project = require( `./project/${ PROJECT_NAME }` );
+	const project = projects[ PROJECT_NAME ];
 	utils();
 	invoke( project, 'utils' );
 	createReduxStoreFromPersistedInitialState( reduxStore => {

@@ -28,6 +28,8 @@ import { isNotificationsOpen } from 'state/selectors';
 import { getSelectedSite } from 'state/ui/selectors';
 import { getCurrentUser } from 'state/current-user/selectors';
 import keyboardShortcuts from 'lib/keyboard-shortcuts';
+import globalKeyboardShortcutsFactory from 'lib/keyboard-shortcuts/global';
+import desktopMaybe from 'lib/desktop';
 
 // KILL IT WITH FIRE
 import sitesFactory from 'lib/sites-list';
@@ -42,13 +44,13 @@ const globalKeyBoardShortcutsEnabled = config.isEnabled( 'keyboard-shortcuts' );
 let globalKeyboardShortcuts;
 
 if ( globalKeyBoardShortcutsEnabled ) {
-	globalKeyboardShortcuts = require( 'lib/keyboard-shortcuts/global' )();
+	globalKeyboardShortcuts = globalKeyboardShortcutsFactory();
 }
 
 const desktopEnabled = config.isEnabled( 'desktop' );
 let desktop;
 if ( desktopEnabled ) {
-	desktop = require( 'lib/desktop' );
+	desktop = desktopMaybe;
 }
 
 /*

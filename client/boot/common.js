@@ -23,8 +23,11 @@ import touchDetect from 'lib/touch-detect';
 import { setLocale, setLocaleRawData } from 'state/ui/language/actions';
 import { isDefaultLocale } from 'lib/i18n-utils';
 import getCurrentLocaleSlug from 'state/selectors/get-current-locale-slug';
-
 import sections from 'sections';
+import oathController from 'auth/controller';
+import notices from 'notices';
+import * as protectForm from 'lib/protect-form';
+import devModules from './dev-modules';
 
 const debug = debugFactory( 'calypso' );
 
@@ -78,10 +81,10 @@ const setupContextMiddleware = reduxStore => {
 };
 
 // We need to require sections to load React with i18n mixin
-const loadSectionsMiddleware = () => require( 'sections' ).load();
+const loadSectionsMiddleware = () => sections.load();
 
 const loggedOutMiddleware = currentUser => {
-    if ( currentUser.get() ) {
+	if ( currentUser.get() ) {
 		return;
 	}
 
@@ -115,7 +118,7 @@ const loggedOutMiddleware = currentUser => {
 const oauthTokenMiddleware = () => {
 	if ( config.isEnabled( 'oauth' ) ) {
 		// Forces OAuth users to the /login page if no token is present
-		page( '*', require( 'auth/controller' ).checkToken );
+		page( '*', oathController.checkToken );
 	}
 };
 
@@ -129,12 +132,12 @@ const setRouteMiddleware = () => {
 
 const clearNoticesMiddleware = () => {
 	//TODO: remove this one when notices are reduxified - it is for old notices
-	page( '*', require( 'notices' ).clearNoticesOnNavigation );
+	page( '*', notices.clearNoticesOnNavigation );
 };
 
 const unsavedFormsMiddleware = () => {
 	// warn against navigating from changed, unsaved forms
-	page.exit( '*', require( 'lib/protect-form' ).checkFormHandler );
+	page.exit( '*', protectForm.checkFormHandler );
 };
 
 export const locales = ( currentUser, reduxStore ) => {
@@ -155,10 +158,7 @@ export const locales = ( currentUser, reduxStore ) => {
 
 export const utils = () => {
 	debug( 'Executing Calypso utils.' );
-
-	if ( process.env.NODE_ENV === 'development' ) {
-		require( './dev-modules' )();
-	}
+	devModules();
 
 	// Infer touch screen by checking if device supports touch events
 	// See touch-detect/README.md

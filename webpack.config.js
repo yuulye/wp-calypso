@@ -20,10 +20,6 @@ const AssetsPlugin = require( 'assets-webpack-plugin' );
 const cacheIdentifier = require( './server/bundler/babel/babel-loader-cache-identifier' );
 const config = require( './server/config' );
 const UseMinifiedFiles = require( './server/bundler/webpack-plugins/use-minified-files' );
-const babelConfig = JSON.parse( fs.readFileSync( './.babelrc', { encoding: 'utf8' } ) );
-
-babelConfig.presets[ 0 ][ 1 ].modules = false;
-babelConfig.plugins = _.without( babelConfig.plugins, 'add-module-exports' );
 
 /**
  * Internal variables
@@ -57,19 +53,14 @@ function getAliasesForExtensions() {
 
 const babelLoader = {
 	loader: 'babel-loader',
-	options: Object.assign(
-		{},
-		babelConfig,
-		{
-			babelrc: false,
-			cacheDirectory: path.join( __dirname, 'build', '.babel-client-cache' ),
-			cacheIdentifier: cacheIdentifier,
-			plugins: [ [
-				path.join( __dirname, 'server', 'bundler', 'babel', 'babel-plugin-transform-wpcalypso-async' ),
-				{ async: config.isEnabled( 'code-splitting' ) }
-			] ].concat( babelConfig.plugins )
-		}
-	)
+	options: {
+		cacheDirectory: path.join( __dirname, 'build', '.babel-client-cache' ),
+		cacheIdentifier: cacheIdentifier,
+		plugins: [ [
+			path.join( __dirname, 'server', 'bundler', 'babel', 'babel-plugin-transform-wpcalypso-async' ),
+			{ async: config.isEnabled( 'code-splitting' ) }
+		] ]
+	}
 };
 
 const webpackConfig = {
@@ -153,7 +144,10 @@ const webpackConfig = {
 		new webpack.IgnorePlugin( /^props$/ ),
 		new CopyWebpackPlugin( [ { from: 'node_modules/flag-icon-css/flags/4x3', to: 'images/flags' } ] ),
 		new HappyPack( {
-			loaders: [ babelLoader ]
+			loaders: _.compact( [
+				process.env.NODE_ENV === 'development' && 'react-hot-loader',
+				babelLoader
+			] )
 		} ),
 		new webpack.NamedModulesPlugin(),
 		new webpack.NamedChunksPlugin( chunk => {

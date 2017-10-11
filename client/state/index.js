@@ -80,7 +80,8 @@ import config from 'config';
  */
 
 // Consolidate the extension reducers under 'extensions' for namespacing.
-const extensions = combineReducers( extensionsModule.reducers() );
+// const extensions = combineReducers( extensionsModule.reducers() );
+// console.error( extensions, extensionsModule.reducers() );
 
 const reducers = {
 	analyticsTracking,
@@ -96,7 +97,7 @@ const reducers = {
 	currentUser,
 	documentHead,
 	domains,
-	extensions,
+	// extensions,
 	form,
 	geo,
 	googleAppsUsers,

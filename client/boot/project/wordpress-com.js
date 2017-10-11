@@ -39,7 +39,7 @@ import Logger from 'lib/catch-js-errors';
 const debug = debugFactory( 'calypso' );
 
 function renderLayout( reduxStore ) {
-    const layoutElement = React.createElement( Layout, {
+	const layoutElement = React.createElement( Layout, {
 		store: reduxStore,
 	} );
 
@@ -90,7 +90,7 @@ export function setupMiddlewares( currentUser, reduxStore ) {
 		renderLayout( reduxStore );
 
 		if ( config.isEnabled( 'catch-js-errors' ) ) {
-		    const errorLogger = new Logger();
+			const errorLogger = new Logger();
 			//Save errorLogger to a singleton for use in arbitrary logging.
 			require( 'lib/catch-js-errors/log' ).registerLogger( errorLogger );
 			//Save data to JS error logger

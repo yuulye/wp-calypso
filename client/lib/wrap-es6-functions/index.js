@@ -7,7 +7,7 @@
 /**
  * External dependencies
  */
-import { isFunction, partial } from 'lodash';
+import { isFunction, partial, noop } from 'lodash';
 
 function wrapFnWithWarning( fn, name ) {
 	const consoleFn = ( console.error || console.log ).bind( console );
@@ -28,7 +28,11 @@ function wrapObjectFn( obj, objectName, key ) {
 	}
 }
 
-export default function() {
+const wrapEs6Functions = function() {
+	if ( process.env.NODE_ENV === 'development' ) {
+		return;
+	}
+
 	[ 'keys', 'entries', 'values', 'findIndex', 'fill', 'find', 'includes' ].map(
 		partial( wrapObjectFn, Array.prototype, 'Array#' )
 	);
@@ -36,4 +40,6 @@ export default function() {
 	[ 'codePointAt', 'normalize', 'repeat', 'startsWith', 'endsWith', 'includes' ].map(
 		partial( wrapObjectFn, String.prototype, 'String#' )
 	);
-}
+};
+
+export default ( process.env.NODE_ENV === 'development' ? wrapEs6Functions : noop );
