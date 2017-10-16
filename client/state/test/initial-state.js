@@ -17,8 +17,11 @@ import localforage from 'lib/localforage';
 import { isSupportUserSession } from 'lib/user/support-user-interop';
 import { useSandbox } from 'test/helpers/use-sinon';
 import { useFakeTimers } from 'test/helpers/use-sinon';
-
-import initialState from 'state/initial-state';
+import createReduxStoreFromPersistedInitialState, {
+	persistOnChange,
+	MAX_AGE,
+	SERIALIZE_THROTTLE,
+} from 'state/initial-state';
 
 jest.mock( 'config', () => {
 	const config = () => 'development';
@@ -38,21 +41,10 @@ jest.mock( 'lib/user/support-user-interop', () => ( {
 } ) );
 
 describe( 'initial-state', () => {
-	let clock,
-		createReduxStoreFromPersistedInitialState,
-		persistOnChange,
-		MAX_AGE,
-		SERIALIZE_THROTTLE;
+	let clock;
 
 	useFakeTimers( fakeClock => {
 		clock = fakeClock;
-	} );
-
-	before( () => {
-	    createReduxStoreFromPersistedInitialState = initialState.default;
-		persistOnChange = initialState.persistOnChange;
-		MAX_AGE = initialState.MAX_AGE;
-		SERIALIZE_THROTTLE = initialState.SERIALIZE_THROTTLE;
 	} );
 
 	describe( 'createReduxStoreFromPersistedInitialState', () => {
