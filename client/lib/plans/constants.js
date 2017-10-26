@@ -444,8 +444,8 @@ export const PLANS_LIST = {
 		getFeatures: () =>
 			compact( [
 				// pay attention to ordering, shared features should align on /plan page
-				FEATURE_OFFSITE_BACKUP_VAULTPRESS_DAILY,
-				FEATURE_BACKUP_ARCHIVE_30,
+				FEATURE_OFFSITE_BACKUP_VAULTPRESS_REALTIME,
+				FEATURE_BACKUP_ARCHIVE_UNLIMITED,
 				FEATURE_BACKUP_STORAGE_SPACE_UNLIMITED,
 				FEATURE_AUTOMATED_RESTORES,
 				FEATURE_SPAM_AKISMET_PLUS,
@@ -454,15 +454,18 @@ export const PLANS_LIST = {
 				isEnabled( 'republicize' ) && FEATURE_REPUBLICIZE,
 				isEnabled( 'simple-payments' ) && FEATURE_SIMPLE_PAYMENTS,
 				FEATURE_WORDADS_INSTANT,
-				FEATURE_VIDEO_UPLOADS_JETPACK_PREMIUM,
-				FEATURE_MALWARE_SCANNING_DAILY,
+				FEATURE_VIDEO_UPLOADS_JETPACK_PRO,
+				FEATURE_MALWARE_SCANNING_DAILY_AND_ON_DEMAND,
+				FEATURE_ONE_CLICK_THREAT_RESOLUTION,
+				FEATURE_ADVANCED_SEO,
+				FEATURE_GOOGLE_ANALYTICS,
 			] ),
 		getSignupFeatures: () =>
 			compact( [
-				FEATURE_MALWARE_SCANNING_DAILY,
+				FEATURE_OFFSITE_BACKUP_VAULTPRESS_REALTIME,
 				FEATURE_MARKETING_AUTOMATION,
 				FEATURE_WORDADS_INSTANT,
-				FEATURE_VIDEO_CDN_LIMITED,
+				FEATURE_VIDEO_UPLOADS_JETPACK_PRO,
 				FEATURE_ALL_PERSONAL_FEATURES,
 			] ),
 		getBillingTimeFrame: () => i18n.translate( 'per year' ),
@@ -900,7 +903,7 @@ export const FEATURES_LIST = {
 
 	[ FEATURE_VIDEO_UPLOADS_JETPACK_PRO ]: {
 		getSlug: () => FEATURE_VIDEO_UPLOADS_JETPACK_PRO,
-		getTitle: () => i18n.translate( 'VideoPress Support' ),
+		getTitle: () => i18n.translate( 'Unlimited Video Hosting' ),
 		getDescription: () =>
 			i18n.translate(
 				'The easiest way to upload videos to your website and display them ' +
