@@ -83,8 +83,8 @@ function hasPaymentMethod( purchase ) {
 	);
 }
 
-function hasPrivacyProtection( purchase ) {
-	return purchase.hasPrivacyProtection;
+function hasPrivacyProtectionProduct( purchase ) {
+	return purchase.hasPrivacyProtectionProduct;
 }
 
 /**
@@ -315,7 +315,7 @@ export {
 	getSubscriptionEndDate,
 	hasIncludedDomain,
 	hasPaymentMethod,
-	hasPrivacyProtection,
+	hasPrivacyProtectionProduct,
 	isCancelable,
 	isPaidWithCreditCard,
 	isPaidWithPayPalDirect,

@@ -21,8 +21,8 @@ import support from 'lib/url/support';
 class ContactsPrivacyCard extends React.PureComponent {
 	static propTypes = {
 		contactInformation: PropTypes.object.isRequired,
-		privateDomain: PropTypes.bool.isRequired,
-		hasPrivacyProtection: PropTypes.bool.isRequired,
+		privacyEnabled: PropTypes.bool.isRequired,
+		hasPrivacyProtectionProduct: PropTypes.bool.isRequired,
 		selectedDomainName: PropTypes.string.isRequired,
 		selectedSite: PropTypes.oneOfType( [ PropTypes.object, PropTypes.bool ] ).isRequired,
 		currentUserCanManage: PropTypes.bool.isRequired,
@@ -64,19 +64,19 @@ class ContactsPrivacyCard extends React.PureComponent {
 
 	getNotice() {
 		const {
-			hasPrivacyProtection,
-			privacyAvailable,
-			privateDomain,
+			hasPrivacyProtectionProduct,
+			privacyProductAvailable,
+			privacyEnabled,
 			selectedSite,
 			selectedDomainName,
 			translate,
 		} = this.props;
 
-		if ( ! privacyAvailable ) {
+		if ( ! privacyProductAvailable ) {
 			return false;
 		}
 
-		if ( hasPrivacyProtection && privateDomain ) {
+		if ( hasPrivacyProtectionProduct && privacyEnabled ) {
 			return (
 				<Notice status="is-success" showDismiss={ false }>
 					{ translate(
@@ -90,7 +90,7 @@ class ContactsPrivacyCard extends React.PureComponent {
 					) }
 				</Notice>
 			);
-		} else if ( hasPrivacyProtection && ! privateDomain ) {
+		} else if ( hasPrivacyProtectionProduct && ! privacyEnabled ) {
 			return (
 				<Notice status="is-warning" showDismiss={ false }>
 					{ translate(

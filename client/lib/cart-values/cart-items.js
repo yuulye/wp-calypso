@@ -311,10 +311,10 @@ export function hasDomainRegistration( cart ) {
 	return some( getAll( cart ), isDomainRegistration );
 }
 
-export function hasOnlyDomainProductsWithPrivacySupport( cart ) {
+export function hasOnlyDomainProductsWithPrivacyProductSupport( cart ) {
 	return every(
 		concat( getDomainTransfers( cart ), getDomainRegistrations( cart ) ),
-		privacyAvailable
+		privacyProductAvailable
 	);
 }
 
@@ -854,8 +854,8 @@ export function isRenewal( cartItem ) {
  * @param {Object} cartItem - `CartItemValue` object
  * @returns {boolean} true if item supports privacy
  */
-export function privacyAvailable( cartItem ) {
-	return get( cartItem, 'extra.privacy_available', true );
+export function privacyProductAvailable( cartItem ) {
+	return get( cartItem, 'extra.private_registration_product_purchase_allowed', true );
 }
 
 /**
@@ -976,7 +976,7 @@ export default {
 	hasDomainInCart,
 	hasDomainMapping,
 	hasDomainRegistration,
-	hasOnlyDomainProductsWithPrivacySupport,
+	hasOnlyDomainProductsWithPrivacyProductSupport,
 	hasFreeTrial,
 	hasGoogleApps,
 	hasOnlyFreeTrial,
