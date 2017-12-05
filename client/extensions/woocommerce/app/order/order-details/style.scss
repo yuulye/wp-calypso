@@ -123,6 +123,12 @@
 		.order-details__totals-value {
 			// Indent enough to account for delete button
 			padding-right: 78px !important;
+			// Increase width for PriceInput
+			width: 13em;
+		}
+
+		.form-text-input-with-affixes {
+			max-width: 13em;
 		}
 
 		.order-details__totals-tax {
