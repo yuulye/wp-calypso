@@ -11,12 +11,11 @@ import { castArray, isObject, forEach, some, isFunction, last, isEmpty } from 'l
 import warn from 'lib/warn';
 
 /**
- * Returns a selector that caches value.
+ * Returns a selector that caches values.
  *
  * @param  {Function} selector      A standard selector for calculating cached result
- * @param  {Function} getDependants A Function describing dependent the dependent(s).
- *                                    Must return either a single dependency
- *                                    or an array of dependencies.
+ * @param  {Function} getDependents A Function describing the dependent(s) of the selector.
+ *                                    Must return an object which gets used as the first arg of the selector
  * @return {Function}               Cached selector
  */
 export default function createCachedSelector( { selector, getDependents } ) {
