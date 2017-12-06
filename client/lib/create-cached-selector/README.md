@@ -46,14 +46,22 @@ const selector = ( { comments, site } ) => `Site ${site.title} has ${comments.le
 const cachedSelector = createCachedSelector( { getDependents, selectors } );
 ```
 
-internally, the selector will store a dependencty tree of dependents.  The tree will have the format:
+internally, the selector will store a dependency tree of dependents.  The tree will have the format:
 ```
-    comments
-    |     |
-  site1   site2
-   |       |
-siteId1    ...
-  |
- "Site ..."
+                    comments
+                       +
+                       |
+            +--------------------+
+            |                    |
+            v                    v
+          site1                site2
+            +                    +
+      +------------+            ...
+      v            v
+    siteId1      siteId2
+      +
+      |
+      v
+    "Site...."
 ```
 
