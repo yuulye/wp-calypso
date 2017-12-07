@@ -28,6 +28,7 @@ RUN        bash /tmp/env-config.sh
 COPY       ./package.json ./npm-shrinkwrap.json /calypso/
 RUN        true \
            && npm install --production \
+           && /bin/bash -c "time chown -R nobody node_modules" \
            && rm -rf /root/.npm \
            && true
 
@@ -54,8 +55,11 @@ RUN        touch node_modules
 # change any time any of the Calypso source-code changes.
 RUN        true \
            && CALYPSO_ENV=production npm run build \
-           && chown -R nobody /calypso \
+           && /bin/bash -c "time find . -not -path './node_modules/*' -print0 | xargs -0 chown nobody" \
            && true
+
+# Print files, just for testing
+RUN        find . -not -user nobody
 
 USER       nobody
 CMD        NODE_ENV=production node build/bundle.js
