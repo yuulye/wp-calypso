@@ -51,7 +51,7 @@ import { recordTracksEvent } from 'state/analytics/actions';
 import WebPreview from 'components/web-preview';
 import { requestSite } from 'state/sites/actions';
 import { activateModule } from 'state/jetpack/modules/actions';
-import { isBusiness, isEnterprise, isJetpackBusiness } from 'lib/products-values';
+import { isBusiness, isEnterprise, isJetpackBusiness, isJetpackPremium } from 'lib/products-values';
 import { hasFeature } from 'state/sites/plans/selectors';
 import { getPlugins } from 'state/plugins/installed/selectors';
 import {
@@ -69,7 +69,7 @@ import { requestSiteSettings, saveSiteSettings } from 'state/site-settings/actio
 // Not perfect but meets the needs of this component well
 const anyHtmlTag = /<\/?[a-z][a-z0-9]*\b[^>]*>/i;
 
-const hasBusinessPlan = overSome( isBusiness, isEnterprise, isJetpackBusiness );
+const hasSupportingPlan = overSome( isBusiness, isEnterprise, isJetpackBusiness, isJetpackPremium );
 
 function getGeneralTabUrl( slug ) {
 	return `/settings/general/${ slug }`;
@@ -347,7 +347,7 @@ export class SeoForm extends React.Component {
 				{ siteIsJetpack && <QueryJetpackModules siteId={ siteId } /> }
 				<PageViewTracker path="/settings/seo/:site" title="Site Settings > SEO" />
 				{ ( isSitePrivate || isSiteHidden ) &&
-					hasBusinessPlan( site.plan ) && (
+					hasSupportingPlan( site.plan ) && (
 						<Notice
 							status="is-warning"
 							showDismiss={ false }
@@ -390,7 +390,7 @@ export class SeoForm extends React.Component {
 					</Notice>
 				) }
 				{ siteIsJetpack &&
-					hasBusinessPlan( site.plan ) &&
+					hasSupportingPlan( site.plan ) &&
 					isSeoToolsActive === false && (
 						<Notice
 							status="is-warning"
@@ -509,7 +509,7 @@ export class SeoForm extends React.Component {
 const mapStateToProps = ( state, ownProps ) => {
 	const { site } = ownProps;
 	// SEO Tools are available with Business plan on WordPress.com, and with Premium plan on Jetpack sites
-	const isAdvancedSeoEligible = site && site.plan && hasBusinessPlan( site.plan );
+	const isAdvancedSeoEligible = site && site.plan && hasSupportingPlan( site.plan );
 	const siteId = getSelectedSiteId( state );
 	const siteIsJetpack = isJetpackSite( state, siteId );
 	const jetpackVersionSupportsSeo = isJetpackMinimumVersion( state, siteId, '4.4-beta1' );
