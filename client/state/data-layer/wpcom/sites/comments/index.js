@@ -11,6 +11,8 @@ import { forEach, get, groupBy, omit } from 'lodash';
 import { mergeHandlers } from 'state/action-watchers/utils';
 import {
 	COMMENTS_CHANGE_STATUS,
+	COMMENTS_COUNT_DECREMENT,
+	COMMENTS_COUNT_INCREMENT,
 	COMMENTS_LIST_REQUEST,
 	COMMENT_REQUEST,
 	COMMENTS_TREE_SITE_ADD,
@@ -32,11 +34,8 @@ import {
 import { noRetry } from 'state/data-layer/wpcom-http/pipeline/retry-on-failure/policies';
 
 const changeCommentStatus = ( { dispatch, getState }, action ) => {
-	const { siteId, commentId, status } = action;
-	const previousStatus = get(
-		getSiteComment( getState(), action.siteId, action.commentId ),
-		'status'
-	);
+	const { siteId, postId, commentId, status } = action;
+	const previousStatus = get( getSiteComment( getState(), siteId, commentId ), 'status' );
 
 	dispatch(
 		http(
@@ -54,13 +53,16 @@ const changeCommentStatus = ( { dispatch, getState }, action ) => {
 			}
 		)
 	);
+
+	dispatch( { type: COMMENTS_COUNT_INCREMENT, siteId, postId, status } );
+	dispatch( { type: COMMENTS_COUNT_DECREMENT, siteId, postId, status: previousStatus } );
 };
 
 export const removeCommentStatusErrorNotice = ( { dispatch }, { commentId } ) =>
 	dispatch( removeNotice( `comment-notice-error-${ commentId }` ) );
 
 const announceStatusChangeFailure = ( { dispatch }, action ) => {
-	const { commentId, status, previousStatus } = action;
+	const { siteId, postId, commentId, status, previousStatus } = action;
 
 	dispatch( removeNotice( `comment-notice-${ commentId }` ) );
 
@@ -70,6 +72,9 @@ const announceStatusChangeFailure = ( { dispatch }, action ) => {
 			status: previousStatus,
 		} )
 	);
+
+	dispatch( { type: COMMENTS_COUNT_INCREMENT, siteId, postId, status: previousStatus } );
+	dispatch( { type: COMMENTS_COUNT_DECREMENT, siteId, postId, status } );
 
 	const errorMessage = {
 		approved: translate( "We couldn't approve this comment." ),

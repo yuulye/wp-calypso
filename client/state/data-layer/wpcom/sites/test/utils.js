@@ -141,7 +141,7 @@ describe( 'utility functions', () => {
 				parentCommentId: null,
 				placeholderId: 'placeholder-id',
 			};
-			const comment = { ID: 1, content: 'this is the content' };
+			const comment = { ID: 1, content: 'this is the content', status: 'approved' };
 
 			updatePlaceholderComment( { dispatch }, action, comment );
 
@@ -150,6 +150,7 @@ describe( 'utility functions', () => {
 				type: COMMENTS_COUNT_INCREMENT,
 				siteId: 2916284,
 				postId: 1010,
+				status: 'approved',
 			} );
 		} );
 	} );

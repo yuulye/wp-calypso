@@ -168,7 +168,8 @@ export const writePostCommentSuccess = (
 		skipSort: !! parentCommentId,
 	} );
 	// increment comments count
-	dispatch( { type: COMMENTS_COUNT_INCREMENT, siteId, postId } );
+	const { status } = comment;
+	dispatch( { type: COMMENTS_COUNT_INCREMENT, siteId, postId, status } );
 };
 
 export const announceFailure = ( { dispatch, getState }, { siteId, postId } ) => {

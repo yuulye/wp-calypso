@@ -104,7 +104,8 @@ export const updatePlaceholderComment = (
 		skipSort: !! parentCommentId,
 	} );
 	// increment comments count
-	dispatch( { type: COMMENTS_COUNT_INCREMENT, siteId, postId } );
+	const { status } = comment;
+	dispatch( { type: COMMENTS_COUNT_INCREMENT, siteId, postId, status } );
 };
 
 /**
