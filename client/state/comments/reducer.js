@@ -28,6 +28,7 @@ import {
 	COMMENTS_RECEIVE,
 	COMMENTS_DELETE,
 	COMMENTS_RECEIVE_ERROR,
+	COMMENTS_COUNT_DECREMENT,
 	COMMENTS_COUNT_INCREMENT,
 	COMMENTS_COUNT_RECEIVE,
 	COMMENTS_LIKE,
@@ -394,16 +395,17 @@ export const counts = ( state = {}, action ) => {
 			} ),
 		};
 		return Object.assign( {}, state, siteCounts );
-	} else if ( COMMENTS_COUNT_INCREMENT === type ) {
+	} else if ( COMMENTS_COUNT_INCREMENT === type || COMMENTS_COUNT_DECREMENT === type ) {
 		const { siteId, postId, status } = actionData;
-		if ( ! siteId || ! postId || ! state[ siteId ] ) {
+		if ( ! siteId || ! postId || ! status || ! state[ siteId ] ) {
 			return state;
 		}
+		const value = COMMENTS_COUNT_INCREMENT === type ? 1 : -1;
 		const { site: siteCounts, [ postId ]: postCounts } = state[ siteId ];
 
-		const newSiteCounts = updateCount( siteCounts, status, 1 );
+		const newSiteCounts = updateCount( siteCounts, status, value );
 
-		const newPostCounts = updateCount( postCounts, status, 1 );
+		const newPostCounts = updateCount( postCounts, status, value );
 
 		const newTotalSiteCounts = Object.assign(
 			{},
