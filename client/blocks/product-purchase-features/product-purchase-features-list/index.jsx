@@ -85,7 +85,11 @@ class ProductPurchaseFeaturesList extends Component {
 				onClick={ this.props.recordBusinessOnboardingClick }
 				link="https://calendly.com/wordpressdotcom/wordpress-com-business-site-setup/"
 			/>,
-			<VideoAudioPosts selectedSite={ selectedSite } key="videoAudioPostsFeature" />,
+			<VideoAudioPosts
+				selectedSite={ selectedSite }
+				plan="business"
+				key="videoAudioPostsFeature"
+			/>,
 			<GoogleAnalyticsStats selectedSite={ selectedSite } key="googleAnalyticsStatsFeature" />,
 			<FindNewTheme selectedSite={ selectedSite } key="findNewThemeFeature" />,
 			isEnabled( 'manage/plugins/upload' ) ? (

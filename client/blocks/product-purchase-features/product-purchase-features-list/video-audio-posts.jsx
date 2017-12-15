@@ -13,7 +13,12 @@ import { localize } from 'i18n-calypso';
 import PurchaseDetail from 'components/purchase-detail';
 import paths from 'lib/paths';
 
-export default localize( ( { selectedSite, translate } ) => {
+export default localize( ( { selectedSite, plan, translate } ) => {
+	const storageLimit =
+		plan === 'business'
+			? 'The Business plan also adds unlimited file storage.'
+			: 'The Premium plan also adds 10GB of file storage.';
+
 	return (
 		<div className="product-purchase-features-list__item">
 			<PurchaseDetail
@@ -21,7 +26,8 @@ export default localize( ( { selectedSite, translate } ) => {
 				title={ translate( 'Video and audio posts' ) }
 				description={ translate(
 					'Enrich your posts with video and audio, uploaded directly on your site. ' +
-						'No ads or limits. The Premium plan also adds 10GB of file storage.'
+						'No ads or limits. ' +
+						storageLimit
 				) }
 				buttonText={ translate( 'Start a new post' ) }
 				href={ paths.newPost( selectedSite ) }
