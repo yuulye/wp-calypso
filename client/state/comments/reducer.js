@@ -363,6 +363,23 @@ export const activeReplies = createReducer(
 	}
 );
 
+function updateCount( counts, rawStatus, value = 1 ) {
+	const status = rawStatus === 'unapproved' ? 'pending' : rawStatus;
+	if ( ! counts || ! counts[ status ] ) {
+		return undefined;
+	}
+	const newCounts = {
+		...counts,
+		[ status ]: counts[ status ] + value,
+	};
+	const { pending, approved, spam } = newCounts;
+	return {
+		...newCounts,
+		all: pending + approved,
+		totalComments: pending + approved + spam,
+	};
+}
+
 export const counts = ( state = {}, action ) => {
 	const { type, ...actionData } = action;
 	if ( COMMENT_COUNTS_UPDATE === type ) {
@@ -377,6 +394,24 @@ export const counts = ( state = {}, action ) => {
 			} ),
 		};
 		return Object.assign( {}, state, siteCounts );
+	} else if ( COMMENTS_COUNT_INCREMENT === type ) {
+		const { siteId, postId, status } = actionData;
+		if ( ! siteId || ! postId || ! state[ siteId ] ) {
+			return state;
+		}
+		const { site: siteCounts, [ postId ]: postCounts } = state[ siteId ];
+
+		const newSiteCounts = updateCount( siteCounts, status, 1 );
+
+		const newPostCounts = updateCount( postCounts, status, 1 );
+
+		const newTotalSiteCounts = Object.assign(
+			{},
+			state[ siteId ],
+			newSiteCounts && { site: newSiteCounts },
+			newPostCounts && { [ postId ]: newPostCounts }
+		);
+		return Object.assign( {}, state, { [ siteId ]: newTotalSiteCounts } );
 	}
 	return state;
 };

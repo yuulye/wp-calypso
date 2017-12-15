@@ -630,5 +630,116 @@ describe( 'reducer', () => {
 				},
 			} );
 		} );
+
+		test( 'can increment counts', () => {
+			const action = {
+				type: COMMENTS_COUNT_INCREMENT,
+				siteId: 2916284,
+				postId: 234,
+				status: 'unapproved',
+			};
+			const state = deepFreeze( {
+				2916284: {
+					site: {
+						all: 11,
+						approved: 5,
+						pending: 6,
+						postTrashed: 0,
+						spam: 1,
+						totalComments: 12,
+						trash: 0,
+					},
+					234: {
+						all: 5,
+						approved: 2,
+						pending: 3,
+						postTrashed: 0,
+						spam: 1,
+						totalComments: 6,
+						trash: 0,
+					},
+				},
+			} );
+			const nextState = counts( state, action );
+			expect( nextState ).toEqual( {
+				2916284: {
+					site: {
+						all: 12,
+						approved: 5,
+						pending: 7,
+						postTrashed: 0,
+						spam: 1,
+						totalComments: 13,
+						trash: 0,
+					},
+					234: {
+						all: 6,
+						approved: 2,
+						pending: 4,
+						postTrashed: 0,
+						spam: 1,
+						totalComments: 7,
+						trash: 0,
+					},
+				},
+			} );
+		} );
+		test( 'can increment counts when only site counts are loaded', () => {
+			const action = {
+				type: COMMENTS_COUNT_INCREMENT,
+				siteId: 2916284,
+				postId: 234,
+				status: 'unapproved',
+			};
+			const state = deepFreeze( {
+				2916284: {
+					site: {
+						all: 11,
+						approved: 5,
+						pending: 6,
+						postTrashed: 0,
+						spam: 1,
+						totalComments: 12,
+						trash: 0,
+					},
+				},
+				77203074: {
+					site: {
+						all: 11,
+						approved: 5,
+						pending: 6,
+						postTrashed: 0,
+						spam: 0,
+						totalComments: 11,
+						trash: 0,
+					},
+				},
+			} );
+			const nextState = counts( state, action );
+			expect( nextState ).toEqual( {
+				2916284: {
+					site: {
+						all: 12,
+						approved: 5,
+						pending: 7,
+						postTrashed: 0,
+						spam: 1,
+						totalComments: 13,
+						trash: 0,
+					},
+				},
+				77203074: {
+					site: {
+						all: 11,
+						approved: 5,
+						pending: 6,
+						postTrashed: 0,
+						spam: 0,
+						totalComments: 11,
+						trash: 0,
+					},
+				},
+			} );
+		} );
 	} );
 } );
