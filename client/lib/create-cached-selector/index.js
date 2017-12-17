@@ -3,12 +3,52 @@
 /**
  * External dependencies
  */
-import { castArray, isObject, forEach, some, isFunction, last, isEmpty } from 'lodash';
+import { isObject, forEach, some, isFunction } from 'lodash';
 
 /**
  * Internal dependencies
  */
 import warn from 'lib/warn';
+
+/**
+ * A map that is Weak with objects but Strong with primitives
+ */
+export class MixedMap {
+	weakMap = new WeakMap();
+	map = new Map();
+
+	constructor( init ) {
+		forEach( init, ( [ key, val ] ) => {
+			this.mapForKey( key ).set( key, val );
+		} );
+	}
+
+	mapForKey = key => ( isObject( key ) ? this.weakMap : this.map );
+
+	clear() {
+		this.weakMap = new WeakMap();
+		this.map.clear();
+		return this;
+	}
+
+	set( k, v ) {
+		this.mapForKey( k ).set( k, v );
+		return this;
+	}
+
+	delete( k ) {
+		this.mapForKey( k ).delete( k );
+		return this;
+	}
+
+	get( k ) {
+		return this.mapForKey( k ).get( k );
+	}
+
+	has( k ) {
+		return this.mapForKey( k ).has( k );
+	}
+}
 
 /**
  * Returns a selector that caches values.
@@ -25,7 +65,7 @@ export default function createCachedSelector( { selector, getDependents } ) {
 		);
 	}
 
-	const cache = new WeakMap();
+	const cache = new MixedMap();
 
 	const cachedSelector = function( state, ...args ) {
 		const dependents = getDependents( state, ...args );
@@ -38,10 +78,6 @@ export default function createCachedSelector( { selector, getDependents } ) {
 				warn( 'Do not pass complex objects as arguments to a cachedSelector' );
 			}
 		}
-		if ( ! isObject( dependents ) || isEmpty( dependents ) ) {
-			warn( 'getDependents must return an object' );
-			return undefined;
-		}
 
 		// create a dependency tree for caching selector results.
 		// this is beneficial over standard memoization techniques so that we can
@@ -49,13 +85,12 @@ export default function createCachedSelector( { selector, getDependents } ) {
 		let currCache = cache;
 		forEach( sortedDependentsArray, dependent => {
 			if ( ! currCache.has( dependent ) ) {
-				const isLast = last( sortedDependentsArray ) === dependent;
-				currCache.set( dependent, isLast ? new Map() : new WeakMap() );
+				currCache.set( dependent, new MixedMap() );
 			}
 			currCache = currCache.get( dependent );
 		} );
 
-		const key = castArray( args ).join();
+		const key = args.join();
 		if ( ! currCache.has( key ) ) {
 			currCache.set( key, selector( dependents, ...args ) );
 		}
