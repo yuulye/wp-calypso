@@ -158,6 +158,7 @@ describe( 'index', () => {
 			expect( getDependents ).toHaveBeenCalledWith( { posts: {} }, 1, 2, 3 );
 		} );
 	} );
+
 	describe( '#MixedMap', () => {
 		test( 'should successfully construct a new version', () => {
 			expect( new MixedMap() ).toBeTruthy();
