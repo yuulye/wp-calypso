@@ -20,7 +20,7 @@ import PriceInput from 'woocommerce/components/price-input';
 import { bindActionCreatorsWithSiteId } from 'woocommerce/lib/redux-utils';
 import { setShippingCost } from 'woocommerce/state/ui/shipping/zones/methods/flat-rate/actions';
 
-const FreeShippingMethod = ( { id, cost, currency, translate, actions } ) => {
+const FlatRateMethod = ( { id, cost, currency, translate, actions } ) => {
 	const isAdvancedSettings = cost && isString( cost ) && isNaN( cost );
 	const onCostChange = event => actions.setShippingCost( id, event.target.value );
 
@@ -44,7 +44,7 @@ const FreeShippingMethod = ( { id, cost, currency, translate, actions } ) => {
 	);
 };
 
-FreeShippingMethod.propTypes = {
+FlatRateMethod.propTypes = {
 	siteId: PropTypes.number,
 	id: PropTypes.oneOfType( [ PropTypes.number, PropTypes.object ] ),
 	cost: PropTypes.oneOfType( [ PropTypes.number, PropTypes.string ] ),
@@ -59,4 +59,4 @@ export default connect( null, ( dispatch, ownProps ) => ( {
 		dispatch,
 		ownProps.siteId
 	),
-} ) )( localize( FreeShippingMethod ) );
+} ) )( localize( FlatRateMethod ) );
