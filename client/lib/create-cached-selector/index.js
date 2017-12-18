@@ -10,7 +10,7 @@ import { isObject, forEach, some, isFunction } from 'lodash';
  */
 import warn from 'lib/warn';
 
-/**
+/*
  * A map that is Weak with objects but Strong with primitives
  */
 export class MixedMap {
