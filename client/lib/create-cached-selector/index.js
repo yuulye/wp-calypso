@@ -28,7 +28,6 @@ export class MixedMap {
 	clear() {
 		this.weakMap = new WeakMap();
 		this.map.clear();
-		return this;
 	}
 
 	set( k, v ) {
@@ -37,8 +36,7 @@ export class MixedMap {
 	}
 
 	delete( k ) {
-		this.mapForKey( k ).delete( k );
-		return this;
+		return this.mapForKey( k ).delete( k );
 	}
 
 	get( k ) {
