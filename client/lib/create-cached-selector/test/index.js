@@ -22,7 +22,7 @@ describe( 'index', () => {
 		beforeEach( () => {
 			selector = jest.fn( ( { posts }, siteId ) => filter( posts, { siteId } ) );
 			getDependents = jest.fn( state => ( { posts: state.posts } ) );
-			getSitePosts = createCachedSelector( { selector, getDependents } );
+			getSitePosts = createCachedSelector( selector, getDependents );
 		} );
 
 		test( 'should create a function which returns the expected value when called', () => {
@@ -113,10 +113,10 @@ describe( 'index', () => {
 				};
 			} );
 
-			const getPostByIdWithData = createCachedSelector( {
-				selector: getPostByIdWithDataSpy,
-				getDependents: ( state, postId ) => ( { post: state.posts[ postId ] } ),
-			} );
+			const getPostByIdWithData = createCachedSelector(
+				getPostByIdWithDataSpy,
+				( state, postId ) => ( { post: state.posts[ postId ] } )
+			);
 
 			const prevState = {
 				posts: {
@@ -142,15 +142,15 @@ describe( 'index', () => {
 		} );
 
 		test( 'should throw an error if getDependents is missing', () => {
-			expect( () => createCachedSelector( { selector } ) ).toThrow();
+			expect( () => createCachedSelector( selector ) ).toThrow();
 		} );
 
 		test( 'should throw an error if selector is missing', () => {
-			expect( () => createCachedSelector( { getDependents } ) ).toThrow();
+			expect( () => createCachedSelector( undefined, getDependents ) ).toThrow();
 		} );
 
 		test( 'should call dependant state getter with dependents and arguments', () => {
-			const memoizedSelector = createCachedSelector( { selector, getDependents } );
+			const memoizedSelector = createCachedSelector( selector, getDependents );
 			const state = { posts: {} };
 
 			memoizedSelector( state, 1, 2, 3 );
@@ -180,10 +180,8 @@ describe( 'index', () => {
 
 		test( 'should be able to clear', () => {
 			const key = new Array();
-			const map = new MixedMap()
-				.set( 4, 4 )
-				.set( key, 'key' )
-				.clear();
+			const map = new MixedMap().set( 4, 4 ).set( key, 'key' );
+			map.clear();
 
 			expect( map.get( 4 ) ).toBeFalsy();
 			expect( map.get( key ) ).toBeFalsy();

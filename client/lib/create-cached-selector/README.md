@@ -16,7 +16,7 @@ For example, imagine that our state contains post objects, each of which are ass
 const getDependents = state => ( { posts: state.posts } );
 const selector = ( { posts }, siteId ) => filter( posts, { siteId } );
 
-const getSitePosts = createCachedSelector( { getDependents, selector } )
+const getSitePosts = createCachedSelector( selector, getDependents );
 ```
 
 In using the selector, we pass in the arguments for `selector`. In this case, we'll need to pass a state object and siteId.
@@ -45,12 +45,11 @@ const getDependents = ( state, siteId ) => ( {
 	comments: state.comments[ siteId ], 
 	site: state.sites[ siteId ],
 } );
-const selector = ( { comments, site } ) => `Site ${ site.title } has ${ comments.length } comments`;
-const cachedSelector = createCachedSelector( { getDependents, selector } );
+const selector = ( { comments, site }, siteId ) => `Site ${ site.title } has ${ comments.length } comments`;
+const cachedSelector = createCachedSelector( selector, getDependents );
 ```
 
-internally, the selector will store a dependency tree of dependents where the item is a map
-keyed by a run of `...args.join()`.  The tree would look like:
+internally, the selector will store a dependency tree of dependents where the last node is a map keyed by a run of `...args.join()`.  The tree would look like:
 ```
                     comments
                        +

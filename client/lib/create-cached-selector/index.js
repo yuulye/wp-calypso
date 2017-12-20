@@ -56,7 +56,7 @@ export class MixedMap {
  *                                    Must return an object which gets used as the first arg of the selector
  * @return {Function}               Cached selector
  */
-export default function createCachedSelector( { selector, getDependents } ) {
+export default function createCachedSelector( selector, getDependents ) {
 	if ( ! isFunction( selector ) || ! isFunction( getDependents ) ) {
 		throw new TypeError(
 			'createCachedSelector: invalid arguments passed, selector and getDependents must both be functions'
