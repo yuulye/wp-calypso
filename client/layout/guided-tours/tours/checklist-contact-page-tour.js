@@ -22,6 +22,9 @@ import {
 	Tour,
 } from 'layout/guided-tours/config-elements';
 
+const SetFeaturedImageButtonLabel = translate( 'Set Featured Image' );
+const UpdateButtonLabel = translate( 'Update' );
+
 export const ChecklistContactPageTour = makeTour(
 	<Tour name="checklistContactPage" version="20171205" path="/non-existent-route" when={ noop }>
 		<Step
@@ -78,9 +81,11 @@ export const ChecklistContactPageTour = makeTour(
 		>
 			<Continue target="dialog-base-action-confirm" step="click-update" click>
 				{ translate(
-					'We’re all set, press {{b}}Set Featured Image{{/b}} to add this image to your page.',
+					'We’re all set, press {{SetFeaturedImageButton/}} to add this image to your page.',
 					{
-						components: { b: <strong /> },
+						components: {
+							SetFeaturedImageButton: <strong>{ SetFeaturedImageButtonLabel }</strong>,
+						},
 					}
 				) }
 			</Continue>
@@ -88,8 +93,8 @@ export const ChecklistContactPageTour = makeTour(
 
 		<Step name="click-update" target="editor-publish-button" arrow="right-top" placement="beside">
 			<Continue target="editor-publish-button" step="finish" click>
-				{ translate( 'Almost done, press the {{b}}Update{{/b}} button to save your changes.', {
-					components: { b: <strong /> },
+				{ translate( 'Almost done, press the {{UpdateButton/}} button to save your changes.', {
+					components: { UpdateButton: <strong>{ UpdateButtonLabel }</strong> },
 				} ) }
 			</Continue>
 		</Step>
