@@ -69,7 +69,7 @@ describe( 'index', () => {
 			expect( warn.mock.calls.length ).toBe( 3 );
 		} );
 
-		test( 'should return the expected value of differing arguments', () => {
+		test( 'should call selector when making non-cached calls', () => {
 			const state = {
 				posts: {
 					[ post1.id ]: post1,
@@ -77,11 +77,11 @@ describe( 'index', () => {
 				},
 			};
 
-			getSitePosts( state, post1.siteId );
-			const sitePosts = getSitePosts( state, post3.siteId );
-			getSitePosts( state, post1.siteId );
+			const sitePosts1 = getSitePosts( state, post1.siteId );
+			const sitePosts3 = getSitePosts( state, post3.siteId );
 
-			expect( sitePosts ).toEqual( [ post3 ] );
+			expect( sitePosts1 ).toEqual( [ post1 ] );
+			expect( sitePosts3 ).toEqual( [ post3 ] );
 			expect( selector.mock.calls.length ).toBe( 2 );
 		} );
 
@@ -97,7 +97,6 @@ describe( 'index', () => {
 			const nextState = {
 				posts: {
 					[ post1.id ]: { ...post1, modified: true },
-					[ post3.id ]: post3,
 				},
 			};
 
@@ -105,7 +104,7 @@ describe( 'index', () => {
 			expect( selector.mock.calls.length ).toBe( 2 );
 		} );
 
-		test( 'should keep the cache on a per-key basis', () => {
+		test( 'should maintain the cache for multiple dependents', () => {
 			const getPostByIdWithDataSpy = jest.fn( ( { post } ) => {
 				return {
 					...post,
@@ -118,26 +117,17 @@ describe( 'index', () => {
 				( state, postId ) => ( { post: state.posts[ postId ] } )
 			);
 
-			const prevState = {
-				posts: {
-					[ post1.id ]: post1,
-				},
-			};
-
-			getPostByIdWithData( prevState, post1.id );
-
-			const nextState = {
+			const state = {
 				posts: {
 					[ post1.id ]: post1,
 					[ post2.id ]: post2,
 				},
 			};
 
-			getPostByIdWithData( nextState, post2.id );
-			expect( getPostByIdWithData( nextState, post1.id ) ).toEqual( {
-				...post1,
-				withData: true,
-			} );
+			getPostByIdWithData( state, post1.id ); // dependents is { post: post1 }
+			getPostByIdWithData( state, post2.id ); // dependents is { post: post2 }
+			getPostByIdWithData( state, post1.id ); // dependents is { post: post1 }. should use cache
+
 			expect( getPostByIdWithDataSpy.mock.calls.length ).toBe( 2 );
 		} );
 
@@ -161,7 +151,7 @@ describe( 'index', () => {
 
 	describe( '#MixedMap', () => {
 		test( 'should successfully construct a new version', () => {
-			expect( new MixedMap() ).toBeTruthy();
+			expect( new MixedMap() ).toBeInstanceOf( MixedMap );
 		} );
 
 		test( 'should be able to set and get', () => {
