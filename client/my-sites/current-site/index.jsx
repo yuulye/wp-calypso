@@ -21,6 +21,7 @@ import Site from 'blocks/site';
 import Gridicon from 'gridicons';
 import SiteNotice from './notice';
 import CartStore from 'lib/cart/store';
+import Count from 'components/count';
 import { setLayoutFocus } from 'state/ui/layout-focus/actions';
 import { getSelectedSite } from 'state/ui/selectors';
 import { getSelectedOrAllSites, getVisibleSites } from 'state/selectors';
@@ -128,7 +129,10 @@ class CurrentSite extends Component {
 					<span className="current-site__switch-sites">
 						<Button compact borderless onClick={ this.switchSites }>
 							<Gridicon icon="chevron-left" size={ 18 } />
-							<span>{ translate( 'Switch Site' ) }</span>
+							<Count primary count={ this.props.siteCount } />
+							<span className="current-site__switch-sites-label">
+								{ translate( 'Switch Site' ) }
+							</span>
 						</Button>
 					</span>
 				) }
