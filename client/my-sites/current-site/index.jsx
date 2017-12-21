@@ -127,8 +127,8 @@ class CurrentSite extends Component {
 				{ this.props.siteCount > 1 && (
 					<span className="current-site__switch-sites">
 						<Button compact borderless onClick={ this.switchSites }>
-							<Gridicon icon="arrow-left" size={ 18 } />
-							{ translate( 'Switch Site' ) }
+							<Gridicon icon="chevron-left" size={ 18 } />
+							<span>{ translate( 'Switch Site' ) }</span>
 						</Button>
 					</span>
 				) }
