@@ -8,8 +8,11 @@ import deepFreeze from 'deep-freeze';
 /**
  * Internal dependencies
  */
-import { credentialsReducer } from '../reducer';
-import { JETPACK_ONBOARDING_CREDENTIALS_RECEIVE } from 'state/action-types';
+import { credentialsReducer, settingsReducer } from '../reducer';
+import {
+	JETPACK_ONBOARDING_SETTINGS_ADD,
+	JETPACK_ONBOARDING_CREDENTIALS_RECEIVE,
+} from 'state/action-types';
 
 describe( 'reducer', () => {
 	describe( 'credentials', () => {
@@ -74,6 +77,72 @@ describe( 'reducer', () => {
 			expect( state ).toEqual( {
 				...initialState,
 				[ siteId ]: newCredentials,
+			} );
+		} );
+	} );
+
+	describe( 'settings', () => {
+		const siteSettings = {
+			token: 'abcd1234',
+			siteTitle: 'My awesome site title',
+			siteDescription: 'Not just another WordPress site',
+		};
+
+		test( 'should default to an empty object', () => {
+			const state = settingsReducer( undefined, {} );
+			expect( state ).toEqual( {} );
+		} );
+
+		test( 'should index settings by siteId', () => {
+			const siteId = 12345678;
+			const initialState = deepFreeze( {} );
+			const state = settingsReducer( initialState, {
+				type: JETPACK_ONBOARDING_SETTINGS_ADD,
+				siteId,
+				settings: siteSettings,
+			} );
+
+			expect( state ).toEqual( {
+				[ siteId ]: siteSettings,
+			} );
+		} );
+
+		test( 'should store settings for new sites', () => {
+			const siteId = 87654321;
+			const initialState = deepFreeze( {
+				[ 12345678 ]: siteSettings,
+			} );
+			const state = settingsReducer( initialState, {
+				type: JETPACK_ONBOARDING_SETTINGS_ADD,
+				siteId,
+				settings: siteSettings,
+			} );
+
+			expect( state ).toEqual( {
+				...initialState,
+				[ siteId ]: siteSettings,
+			} );
+		} );
+
+		test( 'should update settings for the particular site', () => {
+			const siteId = 12345678;
+			const newSettings = {
+				...siteSettings,
+				token: 'efgh5678',
+			};
+			const initialState = deepFreeze( {
+				[ siteId ]: siteSettings,
+				[ 87654321 ]: siteSettings,
+			} );
+			const state = settingsReducer( initialState, {
+				type: JETPACK_ONBOARDING_SETTINGS_ADD,
+				siteId,
+				settings: newSettings,
+			} );
+
+			expect( state ).toEqual( {
+				...initialState,
+				[ siteId ]: newSettings,
 			} );
 		} );
 	} );
