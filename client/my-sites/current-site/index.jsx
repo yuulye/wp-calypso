@@ -112,18 +112,9 @@ class CurrentSite extends Component {
 
 		return (
 			<Card className="current-site">
-				{ this.props.siteCount > 1 && (
-					<span className="current-site__switch-sites">
-						<Button compact borderless onClick={ this.switchSites }>
-							<Gridicon icon="arrow-left" size={ 18 } />
-							{ translate( 'Switch Site' ) }
-						</Button>
-					</span>
-				) }
-
 				{ selectedSite ? (
 					<div>
-						<Site site={ selectedSite } />
+						<Site compact={ true } site={ selectedSite } />
 					</div>
 				) : (
 					<AllSites />
@@ -132,6 +123,15 @@ class CurrentSite extends Component {
 				<AsyncLoad require="my-sites/current-site/domain-warnings" placeholder={ null } />
 
 				<SiteNotice site={ selectedSite } allSitesPath={ this.props.allSitesPath } />
+
+				{ this.props.siteCount > 1 && (
+					<span className="current-site__switch-sites">
+						<Button compact borderless onClick={ this.switchSites }>
+							<Gridicon icon="arrow-left" size={ 18 } />
+							{ translate( 'Switch Site' ) }
+						</Button>
+					</span>
+				) }
 			</Card>
 		);
 	}
