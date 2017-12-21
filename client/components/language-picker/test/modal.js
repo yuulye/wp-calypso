@@ -151,26 +151,18 @@ describe( 'LanguagePickerModal', () => {
 			} );
 		} );
 
-		describe( 'language territories', () => {
-			test( 'should set `popular` territory filter when selected language is popular', () => {
+		describe( 'language groups', () => {
+			test( 'should set default language group filter when geolocation country code not available', () => {
 				const wrapper = shallow( <LanguagePickerModal { ...defaultProps } /> );
-				expect( wrapper.state().filter ).toEqual( 'popular' );
+				expect( wrapper.state().filter ).toEqual( DEFAULT_LANGUAGE_GROUP );
 			} );
 
-			test( 'should load corresponding territory when language is not popular', () => {
-				const notPopularLangSlugProps = Object.assign( {}, defaultProps, {
-					selected: 'cs',
-				} );
-				const wrapper = shallow( <LanguagePickerModal { ...notPopularLangSlugProps } /> );
-				expect( wrapper.state().filter ).toEqual( LANGUAGE_GROUPS[ 4 ].id );
+			test( 'should load correct language group  when geolocation country code available', () => {
+				const wrapper = shallow( <LanguagePickerModal { ...defaultProps } countryCode="IT" /> );
+				expect( wrapper.state().filter ).toEqual( 'western-europe' );
 			} );
 
-			test( 'should should switch country lists when user clicks a territory tab', () => {
-				const wrapper = shallow( <LanguagePickerModal { ...defaultProps } /> );
-				expect( wrapper.state().filter ).toEqual( 'popular' );
-			} );
-
-			test( 'should switch country lists when user clicks a territory tab', () => {
+			test( 'should switch country lists when user clicks a language group tab', () => {
 				const wrapper = shallow( <LanguagePickerModal { ...defaultProps } /> );
 				expect( wrapper.state().filter ).toEqual( DEFAULT_LANGUAGE_GROUP );
 				wrapper

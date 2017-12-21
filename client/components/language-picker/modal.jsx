@@ -17,7 +17,7 @@ import SectionNav from 'components/section-nav';
 import SectionNavTabs from 'components/section-nav/tabs';
 import SectionNavTabItem from 'components/section-nav/item';
 import Search from 'components/search';
-import { getLanguageGroupById, getLanguageGroupByLangSlug } from './utils';
+import { getLanguageGroupByCountryCode, getLanguageGroupById } from './utils';
 import { LANGUAGE_GROUPS, DEFAULT_LANGUAGE_GROUP } from './constants';
 
 export class LanguagePickerModal extends PureComponent {
@@ -27,6 +27,7 @@ export class LanguagePickerModal extends PureComponent {
 		isVisible: PropTypes.bool,
 		languages: PropTypes.array.isRequired,
 		selected: PropTypes.string,
+		countryCode: PropTypes.string,
 	};
 
 	static defaultProps = {
@@ -34,13 +35,14 @@ export class LanguagePickerModal extends PureComponent {
 		onClose: noop,
 		isVisible: false,
 		selected: 'en',
+		countryCode: '',
 	};
 
 	constructor( props ) {
 		super( props );
 
 		this.state = {
-			filter: getLanguageGroupByLangSlug( props.selected, props.languages, true ),
+			filter: getLanguageGroupByCountryCode( this.props.countryCode ),
 			showingDefaultFilter: true,
 			search: false,
 			selectedLanguageSlug: this.props.selected,
@@ -48,15 +50,35 @@ export class LanguagePickerModal extends PureComponent {
 		};
 	}
 
+	componentWillReceiveProps( nextProps ) {
+		if ( nextProps.selected !== this.state.selectedLanguageSlug ) {
+			this.setState( {
+				selectedLanguageSlug: nextProps.selected,
+			} );
+		}
+
+		if ( nextProps.languages !== this.props.languages ) {
+			this.setState( {
+				suggestedLanguages: this.getSuggestedLanguages(),
+			} );
+		}
+
+		if ( this.state.showingDefaultFilter && nextProps.countryCode !== this.props.countryCode ) {
+			this.setState( {
+				filter: getLanguageGroupByCountryCode( nextProps.countryCode ),
+			} );
+		}
+	}
+
 	getFilterLabel( filter ) {
 		const { translate } = this.props;
 
-		const language_group = getLanguageGroupById( filter );
-		if ( ! language_group ) {
+		const languageGroup = getLanguageGroupById( filter );
+		if ( ! languageGroup ) {
 			return undefined;
 		}
-		// `territory.name` is a lambda that takes the `translate` function
-		return language_group.name( translate );
+		// `languageGroup.name` is a lambda that takes the `translate` function
+		return languageGroup.name( translate );
 	}
 
 	getFilteredLanguages() {
@@ -75,8 +97,8 @@ export class LanguagePickerModal extends PureComponent {
 						.filter( language => language.popular )
 						.sort( ( a, b ) => a.popular - b.popular );
 				default:
-					const language_group = getLanguageGroupById( filter );
-					const subTerritories = language_group ? language_group.subTerritories : null;
+					const languageGroup = getLanguageGroupById( filter );
+					const subTerritories = languageGroup ? languageGroup.subTerritories : null;
 					return languages
 						.filter( language => some( language.territories, t => includes( subTerritories, t ) ) )
 						.sort( ( a, b ) => a.name.localeCompare( b.name ) );
@@ -131,8 +153,8 @@ export class LanguagePickerModal extends PureComponent {
 	};
 
 	renderTabItems() {
-		return map( LANGUAGE_GROUPS, language_group => {
-			const filter = language_group.id;
+		return map( LANGUAGE_GROUPS, languageGroup => {
+			const filter = languageGroup.id;
 			const selected = this.state.filter === filter;
 
 			const onClick = () =>
@@ -221,7 +243,7 @@ export class LanguagePickerModal extends PureComponent {
 
 		return (
 			<Dialog
-				isVisible
+				isVisible={ isVisible }
 				buttons={ buttons }
 				onClose={ this.handleClose }
 				additionalClassNames="language-picker__modal"
@@ -241,5 +263,4 @@ export class LanguagePickerModal extends PureComponent {
 		);
 	}
 }
-
 export default localize( LanguagePickerModal );
