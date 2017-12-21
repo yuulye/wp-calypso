@@ -20,7 +20,7 @@ import VerticalNav from 'components/vertical-nav';
 import VerticalNavItem from 'components/vertical-nav/item';
 import paths from 'my-sites/domains/paths';
 import { getSelectedDomain } from 'lib/domains';
-import { findPrivacyServiceWhois } from 'lib/domains/whois/utils';
+import { findRegistrantWhois, findPrivacyServiceWhois } from 'lib/domains/whois/utils';
 
 class ContactsPrivacy extends React.PureComponent {
 	static propTypes = {
@@ -35,12 +35,15 @@ class ContactsPrivacy extends React.PureComponent {
 			return <DomainMainPlaceholder goBack={ this.goToEdit } />;
 		}
 
-		const { translate } = this.props;
+		const { translate, whois } = this.props;
 		const domain = getSelectedDomain( this.props );
 		const { hasPrivacyProtection, privateDomain, privacyAvailable, currentUserCanManage } = domain;
 		const contactInformation = privateDomain
-			? findPrivacyServiceWhois( this.props.whois.data )
-			: this.props.whois.registrantContactDetails;
+			? findPrivacyServiceWhois( whois.data )
+			: findRegistrantWhois( whois.data );
+
+		// eslint-disable-next-line
+		console.log( contactInformation );
 
 		return (
 			<Main className="contacts-privacy">

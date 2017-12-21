@@ -204,17 +204,17 @@ function fetchWhois( domainName ) {
  * Posts new WHOIS contact information data for `domainName` to the backend
  *
  * @param {String} domainName - current domain name
- * @param {Object} contactInformation - contact information to be sent
+ * @param {Object} registrantContactDetails - registrant contact details to be sent to server
  * @param {Boolean} transferLock - state of opt-out of the 60-day transfer lock checkbox
  * @param {Function} onComplete - callback after HTTP action
  */
-function updateWhois( domainName, contactInformation, transferLock, onComplete ) {
-	wpcom.updateWhois( domainName, contactInformation, transferLock, ( error, data ) => {
+function updateWhois( domainName, registrantContactDetails, transferLock, onComplete ) {
+	wpcom.updateWhois( domainName, registrantContactDetails, transferLock, ( error, data ) => {
 		if ( ! error ) {
 			Dispatcher.handleServerAction( {
 				type: ActionTypes.WHOIS_UPDATE_COMPLETED,
 				domainName,
-				registrantContactDetails: contactInformation,
+				registrantContactDetails,
 			} );
 
 			// For WWD the update may take longer
@@ -223,7 +223,7 @@ function updateWhois( domainName, contactInformation, transferLock, onComplete )
 				Dispatcher.handleServerAction( {
 					type: ActionTypes.WHOIS_UPDATE_COMPLETED,
 					domainName,
-					registrantContactDetails: contactInformation,
+					registrantContactDetails,
 				} );
 			}, 60000 );
 		}
