@@ -18,6 +18,7 @@ import FormFieldset from 'components/forms/form-fieldset';
 import FormLabel from 'components/forms/form-label';
 import FormTextarea from 'components/forms/form-textarea';
 import FormTextInput from 'components/forms/form-text-input';
+import JetpackOnboardingDisclaimer from '../disclaimer';
 import { saveJetpackOnboardingSettings } from 'state/jetpack-onboarding/actions';
 
 class JetpackOnboardingSiteTitleStep extends React.PureComponent {
@@ -79,6 +80,8 @@ class JetpackOnboardingSiteTitleStep extends React.PureComponent {
 						</Button>
 					</form>
 				</Card>
+
+				<JetpackOnboardingDisclaimer />
 			</Fragment>
 		);
 	}
