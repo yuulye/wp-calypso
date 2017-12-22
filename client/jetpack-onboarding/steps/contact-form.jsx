@@ -15,14 +15,21 @@ import FormattedHeader from 'components/formatted-header';
 import Tile from 'components/tile-grid/tile';
 import TileGrid from 'components/tile-grid';
 import { recordTracksEvent } from 'state/analytics/actions';
+import { saveJetpackOnboardingSettings } from 'state/jetpack-onboarding/actions';
 
 class JetpackOnboardingContactFormStep extends React.PureComponent {
-	clickAddContactForm = () => {
+	handleAddContactForm = () => {
+		const { siteId } = this.props;
+
 		this.props.recordTracksEvent( 'calypso_jpo_contact_form_clicked' );
+
+		this.props.saveJetpackOnboardingSettings( siteId, {
+			addContactForm: true,
+		} );
 	};
 
 	render() {
-		const { translate } = this.props;
+		const { getForwardUrl, translate } = this.props;
 		const headerText = translate( "Let's shape your new site." );
 		const subHeaderText = translate( 'Would you like to get started with a Contact Us page?' );
 
@@ -39,7 +46,8 @@ class JetpackOnboardingContactFormStep extends React.PureComponent {
 							'Not sure? You can skip this step and add a contact form later.'
 						) }
 						image={ '/calypso/images/illustrations/contact-us.svg' }
-						onClick={ this.clickAddContactForm }
+						onClick={ this.handleAddContactForm }
+						href={ getForwardUrl() }
 					/>
 				</TileGrid>
 			</Fragment>
@@ -47,6 +55,6 @@ class JetpackOnboardingContactFormStep extends React.PureComponent {
 	}
 }
 
-export default connect( null, { recordTracksEvent } )(
+export default connect( null, { recordTracksEvent, saveJetpackOnboardingSettings } )(
 	localize( JetpackOnboardingContactFormStep )
 );
