@@ -17,6 +17,7 @@ import { get } from 'lodash';
  */
 import wpcom from 'lib/wp';
 import config from 'config';
+import Button from 'components/button';
 import CompactCard from 'components/card/compact';
 import Dialog from 'components/dialog';
 import CancelPurchaseForm from 'components/marketing-survey/cancel-purchase-form';
@@ -256,6 +257,14 @@ class RemovePurchase extends Component {
 		);
 	};
 
+	getContactUsButton = () => {
+		return (
+			<Button className="remove-purchase__support-link-button" href="/help/contact/">
+				{ this.props.translate( 'Contact Us' ) }
+			</Button>
+		);
+	};
+
 	renderDomainDialog() {
 		const { translate } = this.props;
 		const buttons = [
@@ -414,8 +423,12 @@ class RemovePurchase extends Component {
 
 	renderAtomicDialog( purchase ) {
 		const { translate } = this.props;
+		const supportButton = this.state.isChatAvailable
+			? this.getChatButton()
+			: this.getContactUsButton();
+
 		const buttons = [
-			this.getChatButton(),
+			supportButton,
 			{
 				action: 'cancel',
 				disabled: this.state.isRemoving,
@@ -432,11 +445,12 @@ class RemovePurchase extends Component {
 				isVisible={ this.state.isDialogVisible }
 				onClose={ this.closeDialog }
 			>
-				<FormSectionHeading>
-					{ translate( 'Remove %(productName)s', { args: { productName } } ) }
-				</FormSectionHeading>
+				<FormSectionHeading />
 				<p>
-					{ translate( 'One does not simply remove %(productName)s.', { args: { productName } } ) }
+					{ translate(
+						'Unfortunately, you need to contact support to cancel your %(productName)s plan.',
+						{ args: { productName } }
+					) }
 				</p>
 			</Dialog>
 		);
