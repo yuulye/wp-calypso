@@ -4,6 +4,7 @@
  * External dependencies
  */
 import React, { Fragment } from 'react';
+import { connect } from 'react-redux';
 import { localize } from 'i18n-calypso';
 import { map } from 'lodash';
 /**
@@ -16,6 +17,7 @@ import FormattedHeader from 'components/formatted-header';
 import FormFieldset from 'components/forms/form-fieldset';
 import FormLabel from 'components/forms/form-label';
 import FormTextInput from 'components/forms/form-text-input';
+import { saveJetpackOnboardingSettings } from 'state/jetpack-onboarding/actions';
 
 class JetpackOnboardingBusinessAddressStep extends React.PureComponent {
 	state = {
@@ -79,4 +81,6 @@ class JetpackOnboardingBusinessAddressStep extends React.PureComponent {
 	}
 }
 
-export default localize( JetpackOnboardingBusinessAddressStep );
+export default connect( null, { saveJetpackOnboardingSettings } )(
+	localize( JetpackOnboardingBusinessAddressStep )
+);
