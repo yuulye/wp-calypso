@@ -46,8 +46,16 @@ class JetpackOnboardingBusinessAddressStep extends React.PureComponent {
 		};
 	}
 
+	handleAddBusinessAddress = () => {
+		const { siteId } = this.props;
+
+		this.props.saveJetpackOnboardingSettings( siteId, {
+			addBusinessAddress: true,
+		} );
+	};
+
 	render() {
-		const { translate } = this.props;
+		const { getForwardUrl, translate } = this.props;
 		const headerText = translate( 'Add a business address.' );
 		const subHeaderText = translate(
 			'Enter your business address to have a map added to your website.'
@@ -71,7 +79,7 @@ class JetpackOnboardingBusinessAddressStep extends React.PureComponent {
 								/>
 							</FormFieldset>
 						) ) }
-						<Button href={ this.props.getForwardUrl() } primary>
+						<Button href={ getForwardUrl() } onClick={ this.handleAddBusinessAddress } primary>
 							{ translate( 'Next Step' ) }
 						</Button>
 					</form>
