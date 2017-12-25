@@ -1,6 +1,6 @@
 /**
  * Adapted from the WordPress wp TinyMCE plugin.
- * 
+ *
  *
  * @format
  * @copyright 2015 by the WordPress contributors.
@@ -399,7 +399,9 @@ function wpcomPlugin( editor ) {
 				mceIframe = document.getElementById( editor.id + '_ifr' ),
 				mceToolbar,
 				mceStatusbar,
-				wpStatusbar;
+				wpStatusbar,
+				isChromeRtl =
+					editor.getParam( 'directionality' ) === 'rtl' && /Chrome/.test( navigator.userAgent );
 
 			if ( container ) {
 				mceToolbar = tinymce.$( '.mce-toolbar-grp', container )[ 0 ];
@@ -652,6 +654,9 @@ function wpcomPlugin( editor ) {
 
 				toolbar.on( 'show', function() {
 					this.reposition();
+					if ( isChromeRtl ) {
+						editor.$( '.mce-widget.mce-tooltip', document.body ).addClass( 'wp-hide-mce-tooltip' );
+					}
 				} );
 
 				toolbar.on( 'keydown', function( event ) {
