@@ -49,7 +49,6 @@ import { recordTracksEvent as recordTracksEventAction } from 'state/analytics/ac
 import { urlToSlug } from 'lib/url';
 import {
 	authorize as authorizeAction,
-	goToXmlrpcErrorFallbackUrl as goToXmlrpcErrorFallbackUrlAction,
 	retryAuth as retryAuthAction,
 } from 'state/jetpack-connect/actions';
 import {
@@ -76,13 +75,13 @@ export class JetpackAuthorize extends Component {
 		// Connected props
 		authAttempts: PropTypes.number.isRequired,
 		authorizationData: PropTypes.shape( {
+			authorizationCode: PropTypes.string,
 			authorizeError: PropTypes.oneOfType( [ PropTypes.object, PropTypes.bool ] ),
 			authorizeSuccess: PropTypes.bool,
 			siteReceived: PropTypes.bool,
 		} ).isRequired,
 		authorize: PropTypes.func.isRequired,
 		calypsoStartedConnection: PropTypes.bool,
-		goToXmlrpcErrorFallbackUrl: PropTypes.func.isRequired,
 		hasExpiredSecretError: PropTypes.bool,
 		hasXmlrpcError: PropTypes.bool,
 		isAlreadyOnSitesList: PropTypes.bool,
@@ -189,6 +188,13 @@ export class JetpackAuthorize extends Component {
 		}
 	}
 
+	redirectToXmlRpcErrorFallbackUrl() {
+		const { state, redirectUri } = this.props.authQuery;
+		const code = this.props.authorizationData.authorizationCode;
+		const url = addQueryArgs( { code, state }, redirectUri );
+		this.externalRedirectOnce( url );
+	}
+
 	shouldAutoAuthorize() {
 		if ( this.props.isMobileAppFlow ) {
 			return false;
@@ -255,8 +261,7 @@ export class JetpackAuthorize extends Component {
 	};
 
 	handleResolve = () => {
-		const { site, goToXmlrpcErrorFallbackUrl, recordTracksEvent } = this.props;
-		const { authorizationCode } = this.props.authorizationData;
+		const { site, recordTracksEvent } = this.props;
 		const authUrl = '/wp-admin/admin.php?page=jetpack&connect_url_redirect=true';
 		this.retryingAuth = false;
 		if ( this.props.hasExpiredSecretError ) {
@@ -270,13 +275,7 @@ export class JetpackAuthorize extends Component {
 		// To resolve, we redirect to the Jetpack Client, and attempt to complete the connection with
 		// legacy functions on the client.
 		recordTracksEvent( 'calypso_jpc_resolve_xmlrpc_error_click' );
-		goToXmlrpcErrorFallbackUrl(
-			{
-				redirect_uri: this.props.authQuery.redirectUri,
-				state: this.props.authQuery.state,
-			},
-			authorizationCode
-		);
+		this.redirectToXmlRpcErrorFallbackUrl();
 	};
 
 	handleSubmit = () => {
@@ -649,7 +648,6 @@ export default connect(
 	},
 	{
 		authorize: authorizeAction,
-		goToXmlrpcErrorFallbackUrl: goToXmlrpcErrorFallbackUrlAction,
 		recordTracksEvent: recordTracksEventAction,
 		retryAuth: retryAuthAction,
 	}
