@@ -27,8 +27,6 @@ import {
 	JETPACK_CONNECT_AUTHORIZE_RECEIVE_SITE_LIST,
 	JETPACK_CONNECT_CREATE_ACCOUNT,
 	JETPACK_CONNECT_CREATE_ACCOUNT_RECEIVE,
-	JETPACK_CONNECT_REDIRECT_WP_ADMIN,
-	JETPACK_CONNECT_REDIRECT_XMLRPC_ERROR_FALLBACK_URL,
 	JETPACK_CONNECT_RETRY_AUTH,
 	JETPACK_CONNECT_SSO_AUTHORIZE_REQUEST,
 	JETPACK_CONNECT_SSO_AUTHORIZE_SUCCESS,
@@ -193,31 +191,6 @@ export function retryAuth( url, attemptNumber ) {
 				url + REMOTE_PATH_AUTH
 			)
 		);
-	};
-}
-
-export function goBackToWpAdmin( url ) {
-	return dispatch => {
-		dispatch( {
-			type: JETPACK_CONNECT_REDIRECT_WP_ADMIN,
-		} );
-		debug( 'goBackToWpAdmin', url );
-		externalRedirect( url );
-	};
-}
-
-export function goToXmlrpcErrorFallbackUrl( queryObject, authorizationCode ) {
-	return dispatch => {
-		const url = addQueryArgs(
-			{ code: authorizationCode, state: queryObject.state },
-			queryObject.redirect_uri
-		);
-		dispatch( {
-			type: JETPACK_CONNECT_REDIRECT_XMLRPC_ERROR_FALLBACK_URL,
-			url,
-		} );
-		debug( 'goToXmlrpcErrorFallbackUrl', queryObject, authorizationCode );
-		externalRedirect( url );
 	};
 }
 

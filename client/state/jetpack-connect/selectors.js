@@ -46,11 +46,6 @@ const getSSO = state => {
 	return get( state, [ 'jetpackConnect', 'jetpackSSO' ] );
 };
 
-const isRedirectingToWpAdmin = function( state ) {
-	const authorizationData = getAuthorizationData( state );
-	return !! authorizationData.isRedirectingToWpAdmin;
-};
-
 const getAuthAttempts = ( state, slug ) => {
 	const attemptsData = get( state, [ 'jetpackConnect', 'jetpackAuthAttempts', slug ] );
 	if ( attemptsData && isStale( attemptsData.timestamp, AUTH_ATTEMPS_TTL ) ) {
@@ -106,7 +101,6 @@ export default {
 	getConnectingSite,
 	getAuthorizationData,
 	getSSO,
-	isRedirectingToWpAdmin,
 	isRemoteSiteOnSitesList,
 	getJetpackSiteByUrl,
 	hasXmlrpcError,
