@@ -28,7 +28,7 @@ import SiteUrlInput from './site-url-input';
 import untrailingslashit from 'lib/route/untrailingslashit';
 import versionCompare from 'lib/version-compare';
 import { addCalypsoEnvQueryArg } from './utils';
-import { checkUrl, confirmJetpackInstallStatus, dismissUrl } from 'state/jetpack-connect/actions';
+import { checkUrl, dismissUrl } from 'state/jetpack-connect/actions';
 import { externalRedirect } from 'lib/route/path';
 import { FLOW_TYPES } from 'state/jetpack-connect/constants';
 import { getConnectingSite, getJetpackSiteByUrl } from 'state/jetpack-connect/selectors';
@@ -59,11 +59,13 @@ export class JetpackConnectMain extends Component {
 		? {
 				currentUrl: this.cleanUrl( this.props.url ),
 				shownUrl: this.props.url,
+				hasUserConfirmedJetpackInstalled: null,
 				waitingForSites: false,
 			}
 		: {
 				currentUrl: '',
 				shownUrl: '',
+				hasUserConfirmedJetpackInstalled: null,
 				waitingForSites: false,
 			};
 	/* eslint-enable indent */
@@ -111,6 +113,9 @@ export class JetpackConnectMain extends Component {
 			this.checkUrl( this.state.currentUrl );
 		}
 	}
+
+	setJetpackInstallStatus = hasUserConfirmedJetpackInstalled =>
+		this.setState( { hasUserConfirmedJetpackInstalled } );
 
 	dismissUrl = () => this.props.dismissUrl( this.state.currentUrl );
 
@@ -246,11 +251,11 @@ export class JetpackConnectMain extends Component {
 			return 'alreadyOwned';
 		}
 
-		if ( this.props.jetpackConnectSite.installConfirmedByUser === false ) {
+		if ( this.state.hasUserConfirmedJetpackInstalled === false ) {
 			return 'notJetpack';
 		}
 
-		if ( this.props.jetpackConnectSite.installConfirmedByUser === true ) {
+		if ( this.state.hasUserConfirmedJetpackInstalled === true ) {
 			return 'notActiveJetpack';
 		}
 
@@ -503,7 +508,7 @@ export class JetpackConnectMain extends Component {
 									jetpackVersion={ jetpackVersion }
 									isInstall={ isInstall }
 									currentUrl={ currentUrl }
-									confirmJetpackInstallStatus={ this.props.confirmJetpackInstallStatus }
+									confirmJetpackInstallStatus={ this.setJetpackInstallStatus }
 									onClick={ instructionsData.buttonOnClick }
 								/>
 							);
@@ -543,7 +548,6 @@ const connectComponent = connect(
 	} ),
 	{
 		checkUrl,
-		confirmJetpackInstallStatus,
 		dismissUrl,
 		recordTracksEvent,
 	}

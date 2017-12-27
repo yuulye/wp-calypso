@@ -17,7 +17,6 @@ import { JetpackConnectMain } from '../main';
 
 const REQUIRED_PROPS = {
 	checkUrl: noop,
-	confirmJetpackInstallStatus: noop,
 	dismissUrl: noop,
 	getJetpackSiteByUrl: noop,
 	isRequestingSites: false,
