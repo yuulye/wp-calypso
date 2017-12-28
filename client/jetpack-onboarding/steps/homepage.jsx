@@ -3,7 +3,7 @@
 /**
  * External dependencies
  */
-import React, { Fragment } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { localize } from 'i18n-calypso';
 
@@ -34,7 +34,7 @@ class JetpackOnboardingHomepageStep extends React.PureComponent {
 		const forwardUrl = getForwardUrl();
 
 		return (
-			<Fragment>
+			<div className="steps__main">
 				<DocumentHead title={ translate( 'Homepage ‹ Jetpack Onboarding' ) } />
 
 				<FormattedHeader headerText={ headerText } subHeaderText={ subHeaderText } />
@@ -57,7 +57,7 @@ class JetpackOnboardingHomepageStep extends React.PureComponent {
 						onClick={ this.handleHomepageSelection( 'page' ) }
 					/>
 				</TileGrid>
-			</Fragment>
+			</div>
 		);
 	}
 }

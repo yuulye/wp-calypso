@@ -3,7 +3,7 @@
 /**
  * External dependencies
  */
-import React, { Fragment } from 'react';
+import React from 'react';
 import Gridicon from 'gridicons';
 import { localize } from 'i18n-calypso';
 import { map } from 'lodash';
@@ -64,7 +64,7 @@ class JetpackOnboardingSummaryStep extends React.PureComponent {
 		const buttonRedirectHref = '#';
 
 		return (
-			<Fragment>
+			<div className="steps__main">
 				<DocumentHead title={ translate( 'Summary ‹ Jetpack Onboarding' ) } />
 				<FormattedHeader headerText={ headerText } subHeaderText={ subHeaderText } />
 
@@ -83,7 +83,7 @@ class JetpackOnboardingSummaryStep extends React.PureComponent {
 						{ translate( 'Visit your site' ) }
 					</Button>
 				</div>
-			</Fragment>
+			</div>
 		);
 	}
 }
