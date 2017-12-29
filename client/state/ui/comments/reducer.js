@@ -2,7 +2,7 @@
 /**
  * External dependencies
  */
-import { get, isUndefined, map } from 'lodash';
+import { get, includes, isUndefined, map } from 'lodash';
 
 /**
  * Internal dependencies
@@ -10,9 +10,15 @@ import { get, isUndefined, map } from 'lodash';
 import { COMMENTS_QUERY_UPDATE } from 'state/action-types';
 import { combineReducers, keyedReducer } from 'state/utils';
 
-const deepUpdateComments = ( state, comments, { page = 1, postId, search, status = 'all' } ) => {
+const deepUpdateComments = (
+	state,
+	comments,
+	{ order, page = 1, postId, search, status = 'all' }
+) => {
 	const parent = postId || 'site';
-	const filter = !! search ? `${ status }?s=${ search }` : status;
+	const orderFilter = includes( [ 'ASC', 'DESC' ], order ) ? order : 'DESC';
+	const searchFilter = !! search ? `&s=${ search }` : '';
+	const filter = `${ status }?order=${ orderFilter }${ searchFilter }`;
 	const commentIds = map( comments, 'ID' );
 
 	const parentObject = get( state, parent, {} );

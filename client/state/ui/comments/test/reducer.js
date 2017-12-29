@@ -27,13 +27,13 @@ describe( 'reducer', () => {
 				query: { page: 1 },
 			} );
 			expect( query ).to.eql( {
-				site: { all: { 1: [ 1, 2, 3, 4, 5 ] } },
+				site: { 'all?order=DESC': { 1: [ 1, 2, 3, 4, 5 ] } },
 			} );
 		} );
 
 		test( 'should add a comments page for the post view with no filters', () => {
 			const state = deepFreeze( {
-				site: { all: { 1: [ 1, 2, 3, 4, 5 ] } },
+				site: { 'all?order=DESC': { 1: [ 1, 2, 3, 4, 5 ] } },
 			} );
 			const query = queries( state, {
 				type: COMMENTS_QUERY_UPDATE,
@@ -45,21 +45,22 @@ describe( 'reducer', () => {
 				},
 			} );
 			expect( query ).to.eql( {
-				site: { all: { 1: [ 1, 2, 3, 4, 5 ] } },
-				[ postId ]: { all: { 1: [ 6, 7, 8, 9, 10 ] } },
+				site: { 'all?order=DESC': { 1: [ 1, 2, 3, 4, 5 ] } },
+				[ postId ]: { 'all?order=DESC': { 1: [ 6, 7, 8, 9, 10 ] } },
 			} );
 		} );
 
 		test( 'should add a comments page for the post view with several filters', () => {
 			const state = deepFreeze( {
-				site: { all: { 1: [ 1, 2, 3, 4, 5 ] } },
-				[ postId ]: { all: { 1: [ 6, 7, 8, 9, 10 ] } },
+				site: { 'all?order=DESC': { 1: [ 1, 2, 3, 4, 5 ] } },
+				[ postId ]: { 'all?order=DESC': { 1: [ 6, 7, 8, 9, 10 ] } },
 			} );
 			const query = queries( state, {
 				type: COMMENTS_QUERY_UPDATE,
 				siteId,
 				comments: comments3,
 				query: {
+					order: 'ASC',
 					page: 2,
 					postId,
 					search: 'foo',
@@ -67,20 +68,20 @@ describe( 'reducer', () => {
 				},
 			} );
 			expect( query ).to.eql( {
-				site: { all: { 1: [ 1, 2, 3, 4, 5 ] } },
+				site: { 'all?order=DESC': { 1: [ 1, 2, 3, 4, 5 ] } },
 				[ postId ]: {
-					all: { 1: [ 6, 7, 8, 9, 10 ] },
-					'spam?s=foo': { 2: [ 11, 12, 13, 14, 15 ] },
+					'all?order=DESC': { 1: [ 6, 7, 8, 9, 10 ] },
+					'spam?order=ASC&s=foo': { 2: [ 11, 12, 13, 14, 15 ] },
 				},
 			} );
 		} );
 
 		test( 'should replace a comments page after a new request', () => {
 			const state = deepFreeze( {
-				site: { all: { 1: [ 1, 2, 3, 4, 5 ] } },
+				site: { 'all?order=DESC': { 1: [ 1, 2, 3, 4, 5 ] } },
 				[ postId ]: {
-					all: { 1: [ 6, 7, 8, 9, 10 ] },
-					'spam?s=foo': { 2: [ 11, 12, 13, 14, 15 ] },
+					'all?order=DESC': { 1: [ 6, 7, 8, 9, 10 ] },
+					'spam?order=ASC&s=foo': { 2: [ 11, 12, 13, 14, 15 ] },
 				},
 			} );
 			const query = queries( state, {
@@ -90,10 +91,10 @@ describe( 'reducer', () => {
 				query: { page: 1 },
 			} );
 			expect( query ).to.eql( {
-				site: { all: { 1: [ 11, 12, 13, 14, 15 ] } },
+				site: { 'all?order=DESC': { 1: [ 11, 12, 13, 14, 15 ] } },
 				[ postId ]: {
-					all: { 1: [ 6, 7, 8, 9, 10 ] },
-					'spam?s=foo': { 2: [ 11, 12, 13, 14, 15 ] },
+					'all?order=DESC': { 1: [ 6, 7, 8, 9, 10 ] },
+					'spam?order=ASC&s=foo': { 2: [ 11, 12, 13, 14, 15 ] },
 				},
 			} );
 		} );
