@@ -1,11 +1,6 @@
 /** @format */
 
 /**
- * External dependencies
- */
-import { expect } from 'chai';
-
-/**
  * Internal dependencies
  */
 import { getLocaleSuggestions } from 'state/selectors';
@@ -18,7 +13,7 @@ describe( 'getLocaleSuggestions()', () => {
 			},
 		} );
 
-		expect( suggestedLocales ).to.equal( null );
+		expect( suggestedLocales ).toBe( null );
 	} );
 
 	test( 'should return the suggested locales', () => {
@@ -30,6 +25,6 @@ describe( 'getLocaleSuggestions()', () => {
 			},
 		} );
 
-		expect( suggestedLocales ).to.eql( [ 'Phwoar!' ] );
+		expect( suggestedLocales ).toEqual( [ 'Phwoar!' ] );
 	} );
 } );

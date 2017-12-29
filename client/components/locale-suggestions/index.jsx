@@ -13,7 +13,7 @@ import { getLocaleSlug } from 'i18n-calypso';
  */
 import { addLocaleToPath } from 'lib/i18n-utils';
 import LocaleSuggestionsListItem from './list-item';
-import { requestLocaleSuggestions } from 'state/i18n/locale-suggestions/actions';
+import QueryLocaleSuggestions from 'components/data/query-locale-suggestions';
 import Notice from 'components/notice';
 import switchLocale from 'lib/i18n-utils/switch-locale';
 import { getLocaleSuggestions } from 'state/selectors';
@@ -42,12 +42,6 @@ export class LocaleSuggestions extends Component {
 		}
 	}
 
-	componentDidMount() {
-		if ( ! this.props.localeSuggestions ) {
-			this.props.requestLocaleSuggestions();
-		}
-	}
-
 	componentWillReceiveProps( nextProps ) {
 		if ( this.props.locale !== nextProps.locale ) {
 			switchLocale( nextProps.locale );
@@ -63,10 +57,14 @@ export class LocaleSuggestions extends Component {
 	};
 
 	render() {
+		if ( this.state.dismissed ) {
+			return null;
+		}
+
 		const { localeSuggestions } = this.props;
 
-		if ( ! localeSuggestions || this.state.dismissed ) {
-			return null;
+		if ( ! localeSuggestions ) {
+			return <QueryLocaleSuggestions />;
 		}
 
 		const usersOtherLocales = localeSuggestions.filter( function( locale ) {
@@ -98,9 +96,6 @@ export class LocaleSuggestions extends Component {
 	}
 }
 
-export default connect(
-	state => ( {
-		localeSuggestions: getLocaleSuggestions( state ),
-	} ),
-	{ requestLocaleSuggestions }
-)( LocaleSuggestions );
+export default connect( state => ( {
+	localeSuggestions: getLocaleSuggestions( state ),
+} ) )( LocaleSuggestions );
