@@ -5,6 +5,7 @@
  */
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { getLocaleSlug } from 'i18n-calypso';
 
 /**
@@ -12,19 +13,27 @@ import { getLocaleSlug } from 'i18n-calypso';
  */
 import { addLocaleToPath } from 'lib/i18n-utils';
 import LocaleSuggestionsListItem from './list-item';
-import LocaleSuggestionStore from 'lib/locale-suggestions';
+import { requestLocaleSuggestions } from 'state/i18n/locale-suggestions/actions';
 import Notice from 'components/notice';
 import switchLocale from 'lib/i18n-utils/switch-locale';
+import { getLocaleSuggestions } from 'state/selectors';
 
-class LocaleSuggestions extends Component {
+export class LocaleSuggestions extends Component {
 	static propTypes = {
 		locale: PropTypes.string,
 		path: PropTypes.string.isRequired,
+		localeSuggestions: PropTypes.array,
+		localeSuggestionsIsFetching: PropTypes.bool,
+	};
+
+	static defaultProps = {
+		locale: '',
+		localeSuggestions: [],
+		localeSuggestionsIsFetching: false,
 	};
 
 	state = {
 		dismissed: false,
-		locales: null,
 	};
 
 	componentWillMount() {
@@ -34,13 +43,9 @@ class LocaleSuggestions extends Component {
 	}
 
 	componentDidMount() {
-		LocaleSuggestionStore.on( 'change', this.updateLocales );
-
-		this.updateLocales();
-	}
-
-	componentWillUnmount() {
-		LocaleSuggestionStore.off( 'change', this.updateLocales );
+		if ( ! this.props.localeSuggestions ) {
+			this.props.requestLocaleSuggestions();
+		}
 	}
 
 	componentWillReceiveProps( nextProps ) {
@@ -57,16 +62,14 @@ class LocaleSuggestions extends Component {
 		return addLocaleToPath( this.props.path, locale );
 	};
 
-	updateLocales = () => {
-		this.setState( { locales: LocaleSuggestionStore.get() } );
-	};
-
 	render() {
-		if ( ! this.state.locales || this.state.dismissed ) {
+		const { localeSuggestions } = this.props;
+
+		if ( ! localeSuggestions || this.state.dismissed ) {
 			return null;
 		}
 
-		const usersOtherLocales = this.state.locales.filter( function( locale ) {
+		const usersOtherLocales = localeSuggestions.filter( function( locale ) {
 			return locale.locale !== getLocaleSlug();
 		} );
 
@@ -95,4 +98,9 @@ class LocaleSuggestions extends Component {
 	}
 }
 
-export default LocaleSuggestions;
+export default connect(
+	state => ( {
+		localeSuggestions: getLocaleSuggestions( state ),
+	} ),
+	{ requestLocaleSuggestions }
+)( LocaleSuggestions );
