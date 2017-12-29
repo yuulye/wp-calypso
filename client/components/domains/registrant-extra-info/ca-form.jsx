@@ -119,24 +119,25 @@ class RegistrantExtraInfoCaForm extends React.PureComponent {
 		} );
 	};
 
+	needsOrganization() {
+		return this.props.contactDetailsExtra.legalType === 'CCO';
+	}
+
 	renderOrganizationField( organizationFieldProps ) {
 		// These props include all the values and callbacks we need to
 		// have this organization field behave the same as the field in the
 		// parent (domain-details-form), particularly around the
-		// formState and back end validation
-
+		// formState and back end validation, but we want a bit more control
+		// over the styling
 		const { translate } = this.props;
-		const className = 'registrant-extra-info';
+		const propsForInput = {
+			...organizationFieldProps,
+			label: translate( 'Organization Name' ),
+			labelProps: { optional: ! this.needsOrganization() },
+			additionalClasses: '', // Drop checkout-field class
+		};
 
-		return (
-			<FormFieldset>
-				<Input
-					className={ className }
-					label={ translate( 'Organization' ) }
-					{ ...organizationFieldProps }
-				/>
-			</FormFieldset>
-		);
+		return <Input { ...propsForInput } />;
 	}
 
 	/*
@@ -147,7 +148,11 @@ class RegistrantExtraInfoCaForm extends React.PureComponent {
 	 * straddles the boundary, the cleanest approach is to handle it here in the
 	 * component.
 	 */
-	validateOrganizationIsNotEmpty( organizationFieldProps ) {
+	addRequiredOrganizationValidation( organizationFieldProps ) {
+		if ( ! this.needsOrganization() ) {
+			return organizationFieldProps;
+		}
+
 		const { translate } = this.props;
 		const requiredFieldError = {
 			isError: true,
@@ -160,24 +165,19 @@ class RegistrantExtraInfoCaForm extends React.PureComponent {
 	}
 
 	render() {
-		const { getFieldProps, translate } = this.props;
+		const { translate } = this.props;
 		const { legalType, ciraAgreementAccepted } = {
 			...defaultValues,
 			...this.props.contactDetailsExtra,
 		};
 
-		const rawFieldProps = getFieldProps( 'organization', true );
-
 		// We have to validate the organization name for the CCO legal
 		// type to avoid OpenSRS rejecting them and causing errors during
 		// payments
-		const organizationFieldProps = this.validateOrganizationIsNotEmpty( rawFieldProps );
-
-		const doesntNeedOrganizationField = legalType !== 'CCO';
-		const organizationFieldIsValid =
-			doesntNeedOrganizationField || ! organizationFieldProps.isError;
-
-		const formIsValid = ciraAgreementAccepted && organizationFieldIsValid;
+		const organizationFieldProps = this.addRequiredOrganizationValidation(
+			this.props.getFieldProps( 'organization', true )
+		);
+		const formIsValid = ciraAgreementAccepted && ! organizationFieldProps.isError;
 
 		const validatingSubmitButton = formIsValid
 			? this.props.children
@@ -223,7 +223,7 @@ class RegistrantExtraInfoCaForm extends React.PureComponent {
 						) }
 					</FormLabel>
 				</FormFieldset>
-				{ doesntNeedOrganizationField || this.renderOrganizationField( organizationFieldProps ) }
+				{ this.renderOrganizationField( organizationFieldProps ) }
 				{ validatingSubmitButton }
 			</form>
 		);
