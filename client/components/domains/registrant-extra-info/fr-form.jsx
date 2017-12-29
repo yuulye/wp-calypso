@@ -154,14 +154,11 @@ class RegistrantExtraInfoFrForm extends React.PureComponent {
 
 				{ formIsValid
 					? this.props.children
-					: map(
-							castArray( this.props.children ),
-							( child, index ) =>
-									React.cloneElement( child, {
-										disabled: child.props.className.match( /submit-button/ ) ||
-											child.props.disabled,
-										key: index,
-									} )
+					: map( castArray( this.props.children ), ( child, index ) =>
+							React.cloneElement( child, {
+								disabled: child.props.className.match( /submit-button/ ) || child.props.disabled,
+								key: index,
+							} )
 						) }
 			</form>
 		);
@@ -236,9 +233,8 @@ class RegistrantExtraInfoFrForm extends React.PureComponent {
 				</FormFieldset>
 
 				<FormFieldset>
-					<FormLabel className="registrant-extra-info__optional" htmlFor="registrantVatId">
+					<FormLabel htmlFor="registrantVatId" optional>
 						{ translate( 'VAT Number' ) }
-						{ this.renderOptional() }
 					</FormLabel>
 					<FormTextInput
 						id="registrantVatId"
@@ -254,9 +250,8 @@ class RegistrantExtraInfoFrForm extends React.PureComponent {
 				</FormFieldset>
 
 				<FormFieldset>
-					<FormLabel className="registrant-extra-info__optional" htmlFor="sirenSiret">
+					<FormLabel htmlFor="sirenSiret" optional>
 						{ translate( 'SIREN or SIRET Number' ) }
-						{ this.renderOptional() }
 					</FormLabel>
 					<FormTextInput
 						id="sirenSiret"
@@ -277,9 +272,8 @@ class RegistrantExtraInfoFrForm extends React.PureComponent {
 				</FormFieldset>
 
 				<FormFieldset>
-					<FormLabel className="registrant-extra-info__optional" htmlFor="trademarkNumber">
+					<FormLabel htmlFor="trademarkNumber" optional>
 						{ translate( 'EU Trademark Number' ) }
-						{ this.renderOptional() }
 					</FormLabel>
 					<FormTextInput
 						id="trademarkNumber"
@@ -299,14 +293,6 @@ class RegistrantExtraInfoFrForm extends React.PureComponent {
 					{ trademarkNumberValidationMessage }
 				</FormFieldset>
 			</div>
-		);
-	}
-
-	renderOptional() {
-		return (
-			<span className="registrant-extra-info__optional-label">
-				{ this.props.translate( 'Optional' ) }
-			</span>
 		);
 	}
 
