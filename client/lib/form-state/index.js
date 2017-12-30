@@ -23,7 +23,7 @@ import {
 } from 'lodash';
 import update from 'immutability-helper';
 
-function Controller( options ) {
+export function Controller( options ) {
 	var debounceWait;
 
 	if ( ! ( this instanceof Controller ) ) {
@@ -172,7 +172,7 @@ assign( Controller.prototype, {
 	},
 } );
 
-function changeFieldValue( formState, name, value, hideFieldErrorsOnChange ) {
+export function changeFieldValue( formState, name, value, hideFieldErrorsOnChange ) {
 	var fieldState = getField( formState, name ),
 		command = {},
 		errors;
@@ -206,13 +206,13 @@ function updateFields( formState, callback ) {
 	} );
 }
 
-function initializeFields( formState, fieldValues ) {
+export function initializeFields( formState, fieldValues ) {
 	return updateFields( formState, function( name ) {
 		return { value: fieldValues[ name ] || '', name };
 	} );
 }
 
-function setFieldsValidating( formState ) {
+export function setFieldsValidating( formState ) {
 	return assign(
 		{},
 		formState,
@@ -222,7 +222,7 @@ function setFieldsValidating( formState ) {
 	);
 }
 
-function setFieldErrors( formState, fieldErrors, hideFieldErrorsOnChange ) {
+export function setFieldErrors( formState, fieldErrors, hideFieldErrorsOnChange ) {
 	return assign(
 		{},
 		formState,
@@ -251,7 +251,7 @@ function showAllErrors( formState ) {
 	);
 }
 
-function hasErrors( formState ) {
+export function hasErrors( formState ) {
 	return ! isEmpty( getErrorMessages( formState ) );
 }
 
@@ -261,14 +261,14 @@ function needsValidation( formState ) {
 	} );
 }
 
-function createNullFieldValues( fieldNames ) {
+export function createNullFieldValues( fieldNames ) {
 	return fieldNames.reduce( function( fields, name ) {
 		fields[ name ] = null;
 		return fields;
 	}, {} );
 }
 
-function createInitialFormState( fieldValues ) {
+export function createInitialFormState( fieldValues ) {
 	return mapValues( fieldValues, function( value ) {
 		return {
 			value: value,
@@ -284,15 +284,15 @@ function getField( formState, fieldName ) {
 	return formState[ camelCase( fieldName ) ];
 }
 
-function getFieldValue( formState, fieldName ) {
+export function getFieldValue( formState, fieldName ) {
 	return getField( formState, fieldName ).value;
 }
 
-function getAllFieldValues( formState ) {
+export function getAllFieldValues( formState ) {
 	return mapValues( formState, 'value' );
 }
 
-function getFieldErrorMessages( formState, fieldName ) {
+export function getFieldErrorMessages( formState, fieldName ) {
 	if ( ! isFieldInvalid( formState, fieldName ) ) {
 		return;
 	}
@@ -311,45 +311,45 @@ function isEveryFieldInitialized( formState ) {
 	return every( formState, isInitialized );
 }
 
-function isFieldInvalid( formState, fieldName ) {
+export function isFieldInvalid( formState, fieldName ) {
 	var field = getField( formState, fieldName );
 
 	return isInitialized( field ) && field.isShowingErrors && ! isEmpty( field.errors );
 }
 
-function isFieldPendingValidation( formState, fieldName ) {
+export function isFieldPendingValidation( formState, fieldName ) {
 	var field = getField( formState, fieldName );
 
 	return field.isPendingValidation;
 }
 
-function isFieldValidating( formState, fieldName ) {
+export function isFieldValidating( formState, fieldName ) {
 	var field = getField( formState, fieldName );
 
 	return field.isValidating;
 }
 
-function getInvalidFields( formState ) {
+export function getInvalidFields( formState ) {
 	return filter( formState, function( field, fieldName ) {
 		return isFieldInvalid( formState, fieldName );
 	} );
 }
-function getErrorMessages( formState ) {
+export function getErrorMessages( formState ) {
 	var invalidFields = getInvalidFields( formState );
 
 	return flatten( map( invalidFields, 'errors' ) );
 }
 
-function isSubmitButtonDisabled( formState ) {
+export function isSubmitButtonDisabled( formState ) {
 	return ! every( formState, isInitialized );
 }
 
-function isFieldDisabled( formState, fieldName ) {
+export function isFieldDisabled( formState, fieldName ) {
 	var field = getField( formState, fieldName );
 	return ! isInitialized( field );
 }
 
-function isFieldValid( formState, fieldName ) {
+export function isFieldValid( formState, fieldName ) {
 	return (
 		! isFieldInvalid( formState, fieldName ) &&
 		! isEmpty( getFieldValue( formState, fieldName ) ) &&
@@ -357,41 +357,17 @@ function isFieldValid( formState, fieldName ) {
 	);
 }
 
-function isFieldPossiblyValid( formState, fieldName ) {
+export function isFieldPossiblyValid( formState, fieldName ) {
 	return (
 		! isEmpty( getFieldValue( formState, fieldName ) ) &&
 		( ! isFieldInvalid( formState, fieldName ) || isFieldPendingValidation( formState, fieldName ) )
 	);
 }
 
-function showFieldValidationLoading( formState, fieldName ) {
+export function showFieldValidationLoading( formState, fieldName ) {
 	return (
 		isFieldValidating( formState, fieldName ) &&
 		getFieldValue( formState, fieldName ) &&
 		! isFieldValid( formState, fieldName )
 	);
 }
-
-export default {
-	Controller: Controller,
-	getFieldValue: getFieldValue,
-	setFieldsValidating: setFieldsValidating,
-	setFieldErrors: setFieldErrors,
-	getErrorMessages: getErrorMessages,
-	getInvalidFields: getInvalidFields,
-	getFieldErrorMessages: getFieldErrorMessages,
-	hasErrors: hasErrors,
-	isFieldDisabled: isFieldDisabled,
-	isFieldInvalid: isFieldInvalid,
-	isFieldPendingValidation: isFieldPendingValidation,
-	isFieldValidating: isFieldValidating,
-	getAllFieldValues: getAllFieldValues,
-	isSubmitButtonDisabled: isSubmitButtonDisabled,
-	isFieldValid: isFieldValid,
-	isFieldPossiblyValid: isFieldPossiblyValid,
-	showFieldValidationLoading: showFieldValidationLoading,
-	createInitialFormState: createInitialFormState,
-	createNullFieldValues: createNullFieldValues,
-	initializeFields: initializeFields,
-	changeFieldValue: changeFieldValue,
-};

@@ -29,7 +29,13 @@ import notices from 'notices';
 import Notice from 'components/notice';
 import LoggedOutForm from 'components/logged-out-form';
 import { login } from 'lib/paths';
-import formState from 'lib/form-state';
+import {
+	Controller,
+	getFieldErrorMessages,
+	getFieldValue,
+	isFieldInvalid,
+	isFieldValid,
+} from 'lib/form-state';
 import LoggedOutFormLinks from 'components/logged-out-form/links';
 import LoggedOutFormLinkItem from 'components/logged-out-form/link-item';
 import LoggedOutFormFooter from 'components/logged-out-form/footer';
@@ -105,7 +111,7 @@ class SignupForm extends Component {
 
 	componentWillMount() {
 		debug( 'Mounting the SignupForm React component.' );
-		this.formStateController = new formState.Controller( {
+		this.formStateController = new Controller( {
 			initialFields: this.getInitialFields(),
 			sanitizerFunction: this.sanitize,
 			validatorFunction: this.validate,
@@ -203,7 +209,7 @@ class SignupForm extends Component {
 				messages = {};
 			} else {
 				forEach( messages, ( fieldError, field ) => {
-					if ( ! formState.isFieldInvalid( this.state.form, field ) ) {
+					if ( ! isFieldInvalid( this.state.form, field ) ) {
 						return;
 					}
 
@@ -355,14 +361,14 @@ class SignupForm extends Component {
 
 	getUserData() {
 		return {
-			username: formState.getFieldValue( this.state.form, 'username' ),
-			password: formState.getFieldValue( this.state.form, 'password' ),
-			email: formState.getFieldValue( this.state.form, 'email' ),
+			username: getFieldValue( this.state.form, 'username' ),
+			password: getFieldValue( this.state.form, 'password' ),
+			email: getFieldValue( this.state.form, 'email' ),
 		};
 	}
 
 	getErrorMessagesWithLogin( fieldName ) {
-		const messages = formState.getFieldErrorMessages( this.state.form, fieldName );
+		const messages = getFieldErrorMessages( this.state.form, fieldName );
 		if ( ! messages ) {
 			return;
 		}
@@ -375,8 +381,7 @@ class SignupForm extends Component {
 		return map( messages, ( message, error_code ) => {
 			if ( error_code === 'taken' ) {
 				link +=
-					'&email_address=' +
-					encodeURIComponent( formState.getFieldValue( this.state.form, fieldName ) );
+					'&email_address=' + encodeURIComponent( getFieldValue( this.state.form, fieldName ) );
 				return (
 					<span>
 						<p>
@@ -395,8 +400,7 @@ class SignupForm extends Component {
 	}
 
 	formFields() {
-		const isEmailValid =
-			! this.props.disableEmailInput && formState.isFieldValid( this.state.form, 'email' );
+		const isEmailValid = ! this.props.disableEmailInput && isFieldValid( this.state.form, 'email' );
 
 		return (
 			<div>
@@ -412,15 +416,15 @@ class SignupForm extends Component {
 					id="email"
 					name="email"
 					type="email"
-					value={ formState.getFieldValue( this.state.form, 'email' ) }
-					isError={ formState.isFieldInvalid( this.state.form, 'email' ) }
+					value={ getFieldValue( this.state.form, 'email' ) }
+					isError={ isFieldInvalid( this.state.form, 'email' ) }
 					isValid={ this.state.validationInitialized && isEmailValid }
 					onBlur={ this.handleBlur }
 					onChange={ this.handleChangeEvent }
 				/>
 				{ this.emailDisableExplanation() }
 
-				{ formState.isFieldInvalid( this.state.form, 'email' ) && (
+				{ isFieldInvalid( this.state.form, 'email' ) && (
 					<FormInputValidation isError text={ this.getErrorMessagesWithLogin( 'email' ) } />
 				) }
 
@@ -432,14 +436,14 @@ class SignupForm extends Component {
 					disabled={ this.state.submitting || this.props.disabled }
 					id="username"
 					name="username"
-					value={ formState.getFieldValue( this.state.form, 'username' ) }
-					isError={ formState.isFieldInvalid( this.state.form, 'username' ) }
-					isValid={ formState.isFieldValid( this.state.form, 'username' ) }
+					value={ getFieldValue( this.state.form, 'username' ) }
+					isError={ isFieldInvalid( this.state.form, 'username' ) }
+					isValid={ isFieldValid( this.state.form, 'username' ) }
 					onBlur={ this.handleBlur }
 					onChange={ this.handleChangeEvent }
 				/>
 
-				{ formState.isFieldInvalid( this.state.form, 'username' ) && (
+				{ isFieldInvalid( this.state.form, 'username' ) && (
 					<FormInputValidation isError text={ this.getErrorMessagesWithLogin( 'username' ) } />
 				) }
 
@@ -449,9 +453,9 @@ class SignupForm extends Component {
 					disabled={ this.state.submitting || this.props.disabled }
 					id="password"
 					name="password"
-					value={ formState.getFieldValue( this.state.form, 'password' ) }
-					isError={ formState.isFieldInvalid( this.state.form, 'password' ) }
-					isValid={ formState.isFieldValid( this.state.form, 'password' ) }
+					value={ getFieldValue( this.state.form, 'password' ) }
+					isError={ isFieldInvalid( this.state.form, 'password' ) }
+					isValid={ isFieldValid( this.state.form, 'password' ) }
 					onBlur={ this.handleBlur }
 					onChange={ this.handleChangeEvent }
 					submitting={ this.state.submitting || this.props.submitting }
@@ -527,9 +531,9 @@ class SignupForm extends Component {
 	}
 
 	passwordValidationExplanation() {
-		const passwordValue = formState.getFieldValue( this.state.form, 'password' );
+		const passwordValue = getFieldValue( this.state.form, 'password' );
 
-		if ( formState.isFieldInvalid( this.state.form, 'password' ) ) {
+		if ( isFieldInvalid( this.state.form, 'password' ) ) {
 			return <FormInputValidation isError text={ this.getErrorMessagesWithLogin( 'password' ) } />;
 		}
 

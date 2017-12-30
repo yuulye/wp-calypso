@@ -23,7 +23,14 @@ import FormCheckbox from 'components/forms/form-checkbox';
 import FormLabel from 'components/forms/form-label';
 import ValidationErrorList from 'notices/validation-error-list';
 import { forDomainRegistrations as countriesList } from 'lib/countries-list';
-import formState from 'lib/form-state';
+import {
+	Controller,
+	getAllFieldValues,
+	getErrorMessages,
+	getFieldValue,
+	isFieldDisabled,
+	isFieldInvalid,
+} from 'lib/form-state';
 import notices from 'notices';
 import paths from 'my-sites/domains/paths';
 import upgradesActions from 'lib/upgrades/actions';
@@ -79,7 +86,7 @@ class EditContactInfoFormCard extends React.Component {
 			'stateName',
 		] );
 
-		this.formStateController = formState.Controller( {
+		this.formStateController = Controller( {
 			initialFields: contactInformation,
 			sanitizerFunction: this.sanitize,
 			validatorFunction: this.validate,
@@ -135,7 +142,7 @@ class EditContactInfoFormCard extends React.Component {
 			return;
 		}
 
-		const messages = formState.getErrorMessages( state );
+		const messages = getErrorMessages( state );
 
 		if ( messages.length > 0 ) {
 			const notice = notices.error( <ValidationErrorList messages={ messages } /> );
@@ -158,18 +165,16 @@ class EditContactInfoFormCard extends React.Component {
 		const { firstName, lastName, organization, email } = this.props.contactInformation,
 			isWwdDomain = this.props.selectedDomain.registrar === registrarNames.WWD,
 			primaryFieldsChanged = ! (
-				firstName === formState.getFieldValue( this.state.form, 'first-name' ) &&
-				lastName === formState.getFieldValue( this.state.form, 'last-name' ) &&
-				organization === formState.getFieldValue( this.state.form, 'organization' ) &&
-				email === formState.getFieldValue( this.state.form, 'email' )
+				firstName === getFieldValue( this.state.form, 'first-name' ) &&
+				lastName === getFieldValue( this.state.form, 'last-name' ) &&
+				organization === getFieldValue( this.state.form, 'organization' ) &&
+				email === getFieldValue( this.state.form, 'email' )
 			);
 		return isWwdDomain && primaryFieldsChanged;
 	}
 
 	hasEmailChanged() {
-		return (
-			this.props.contactInformation.email !== formState.getFieldValue( this.state.form, 'email' )
-		);
+		return this.props.contactInformation.email !== getFieldValue( this.state.form, 'email' );
 	}
 
 	handleFormControllerError = error => {
@@ -248,7 +253,7 @@ class EditContactInfoFormCard extends React.Component {
 
 		let text;
 		if ( this.hasEmailChanged() ) {
-			const newEmail = formState.getFieldValue( this.state.form, 'email' );
+			const newEmail = getFieldValue( this.state.form, 'email' );
 
 			text = translate(
 				'We’ll email you at {{strong}}%(oldEmail)s{{/strong}} and {{strong}}%(newEmail)s{{/strong}} ' +
@@ -279,7 +284,7 @@ class EditContactInfoFormCard extends React.Component {
 		const { translate } = this.props;
 		const saveButtonLabel = translate( 'Save Contact Info' );
 		const canUseDesignatedAgent = this.props.selectedDomain.transferLockOnWhoisUpdateOptional;
-		const currentContactInformation = formState.getAllFieldValues( this.state.form );
+		const currentContactInformation = getAllFieldValues( this.state.form );
 		const initialContactInformation = pick(
 			this.props.contactInformation,
 			keys( currentContactInformation )
@@ -366,7 +371,7 @@ class EditContactInfoFormCard extends React.Component {
 							} ),
 						} ) }
 						{ this.getField( FormStateSelect, {
-							countryCode: formState.getFieldValue( this.state.form, 'countryCode' ),
+							countryCode: getFieldValue( this.state.form, 'countryCode' ),
 							name: 'state',
 							label: translate( 'State', {
 								context: 'Domain Edit Contact Info form.',
@@ -421,7 +426,7 @@ class EditContactInfoFormCard extends React.Component {
 		);
 		const isDisabled =
 			this.state.formSubmitting ||
-			formState.isFieldDisabled( this.state.form, name ) ||
+			isFieldDisabled( this.state.form, name ) ||
 			includes( unmodifiableFields, snakeCase( name ) );
 
 		return (
@@ -429,8 +434,8 @@ class EditContactInfoFormCard extends React.Component {
 				{ ...props }
 				additionalClasses="edit-contact-info__form-field"
 				disabled={ isDisabled }
-				isError={ formState.isFieldInvalid( this.state.form, name ) }
-				value={ formState.getFieldValue( this.state.form, name ) }
+				isError={ isFieldInvalid( this.state.form, name ) }
+				value={ getFieldValue( this.state.form, name ) }
 				onChange={ this.onChange }
 			/>
 		);
@@ -502,7 +507,7 @@ class EditContactInfoFormCard extends React.Component {
 			}
 			upgradesActions.updateWhois(
 				this.props.selectedDomain.name,
-				formState.getAllFieldValues( this.state.form ),
+				getAllFieldValues( this.state.form ),
 				this.state.transferLock,
 				this.onWhoisUpdate
 			);
@@ -532,7 +537,7 @@ class EditContactInfoFormCard extends React.Component {
 			let message;
 
 			if ( this.hasEmailChanged() ) {
-				const newEmail = formState.getFieldValue( this.state.form, 'email' );
+				const newEmail = getFieldValue( this.state.form, 'email' );
 
 				message = this.props.translate(
 					'Emails have been sent to {{strong}}%(oldEmail)s{{/strong}} and {{strong}}%(newEmail)s{{/strong}}. ' +

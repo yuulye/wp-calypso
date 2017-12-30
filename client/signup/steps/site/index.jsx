@@ -15,7 +15,15 @@ import debugFactory from 'debug';
 import config from 'config';
 import wpcom from 'lib/wp';
 import analytics from 'lib/analytics';
-import formState from 'lib/form-state';
+import {
+	Controller,
+	getFieldErrorMessages,
+	getFieldValue,
+	isFieldInvalid,
+	isFieldValid,
+	setFieldErrors,
+	setFieldsValidating,
+} from 'lib/form-state';
 import { login } from 'lib/paths';
 import SignupActions from 'lib/signup/actions';
 import ValidationFieldset from 'signup/validation-fieldset';
@@ -54,8 +62,8 @@ class Site extends React.Component {
 			initialState = this.props.step.form;
 
 			if ( ! isEmpty( this.props.step.errors ) ) {
-				initialState = formState.setFieldErrors(
-					formState.setFieldsValidating( initialState ),
+				initialState = setFieldErrors(
+					setFieldsValidating( initialState ),
 					{
 						site: this.props.step.errors[ 0 ].message,
 					},
@@ -64,7 +72,7 @@ class Site extends React.Component {
 			}
 		}
 
-		this.formStateController = new formState.Controller( {
+		this.formStateController = new Controller( {
 			fieldNames: [ 'site' ],
 			sanitizerFunction: this.sanitize,
 			validatorFunction: this.validate,
@@ -143,7 +151,7 @@ class Site extends React.Component {
 
 		this.formStateController.handleSubmit(
 			function( hasErrors ) {
-				const site = formState.getFieldValue( this.state.form, 'site' );
+				const site = getFieldValue( this.state.form, 'site' );
 
 				this.setState( { submitting: false } );
 
@@ -201,7 +209,7 @@ class Site extends React.Component {
 				isNative: config.isEnabled( 'login/native-login-links' ),
 				redirectTo: window.location.href,
 			} ),
-			messages = formState.getFieldErrorMessages( this.state.form, fieldName );
+			messages = getFieldErrorMessages( this.state.form, fieldName );
 
 		if ( ! messages ) {
 			return;
@@ -245,9 +253,9 @@ class Site extends React.Component {
 					disabled={ fieldDisabled }
 					type="text"
 					name="site"
-					value={ formState.getFieldValue( this.state.form, 'site' ) }
-					isError={ formState.isFieldInvalid( this.state.form, 'site' ) }
-					isValid={ formState.isFieldValid( this.state.form, 'site' ) }
+					value={ getFieldValue( this.state.form, 'site' ) }
+					isError={ isFieldInvalid( this.state.form, 'site' ) }
+					isValid={ isFieldValid( this.state.form, 'site' ) }
 					onBlur={ this.handleBlur }
 					onChange={ this.handleChangeEvent }
 				/>

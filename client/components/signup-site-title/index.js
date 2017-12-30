@@ -13,7 +13,7 @@ import { noop } from 'lodash';
  * Internal dependencies
  */
 import LoggedOutForm from 'components/logged-out-form';
-import formState from 'lib/form-state';
+import { Controller, getFieldValue } from 'lib/form-state';
 import FormFieldset from 'components/forms/form-fieldset';
 import FormButton from 'components/forms/form-button';
 import FormTextInput from 'components/forms/form-text-input';
@@ -27,7 +27,7 @@ class SignupSiteTitle extends React.Component {
 	};
 
 	componentWillMount() {
-		this.formStateController = new formState.Controller( {
+		this.formStateController = new Controller( {
 			fieldNames: [ 'siteTitle' ],
 			validatorFunction: noop,
 			onNewState: this.setFormState,
@@ -74,7 +74,7 @@ class SignupSiteTitle extends React.Component {
 	handleSubmit = event => {
 		event.preventDefault();
 
-		const siteTitle = formState.getFieldValue( this.state.form, 'siteTitle' );
+		const siteTitle = getFieldValue( this.state.form, 'siteTitle' );
 		this.props.onSubmit( siteTitle );
 	};
 

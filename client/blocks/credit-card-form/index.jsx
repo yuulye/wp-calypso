@@ -17,7 +17,7 @@ import CompactCard from 'components/card/compact';
 import CreditCardFormFields from 'components/credit-card-form-fields';
 import { forPayments as countriesList } from 'lib/countries-list';
 import FormButton from 'components/forms/form-button';
-import formState from 'lib/form-state';
+import { Controller, getAllFieldValues, getErrorMessages, isFieldInvalid } from 'lib/form-state';
 import notices from 'notices';
 import { validateCardDetails } from 'lib/credit-card-details';
 import ValidationErrorList from 'notices/validation-error-list';
@@ -61,7 +61,7 @@ const CreditCardForm = createReactClass( {
 			fields.name = this.props.initialValues.name;
 		}
 
-		this.formStateController = formState.Controller( {
+		this.formStateController = Controller( {
 			initialFields: fields,
 			onNewState: this.setFormState,
 			validatorFunction: this.validate,
@@ -89,7 +89,7 @@ const CreditCardForm = createReactClass( {
 			return;
 		}
 
-		const messages = formState.getErrorMessages( form );
+		const messages = getErrorMessages( form );
 
 		if ( messages.length > 0 ) {
 			const notice = notices.error( <ValidationErrorList messages={ messages } /> );
@@ -110,7 +110,7 @@ const CreditCardForm = createReactClass( {
 	},
 
 	onFieldChange( rawDetails ) {
-		// Maps params from CreditCardFormFields component to work with formState.
+		// Maps params from CreditCardFormFields component to work with
 		forOwn( rawDetails, ( value, name ) => {
 			this.formStateController.handleFieldChange( {
 				name,
@@ -222,13 +222,13 @@ const CreditCardForm = createReactClass( {
 	},
 
 	isFieldInvalid( name ) {
-		return formState.isFieldInvalid( this.state.form, name );
+		return isFieldInvalid( this.state.form, name );
 	},
 
 	getValidationErrors() {
 		const validationResult = validateCardDetails( this.getCardDetails() );
 
-		// Maps keys from credit card validator to work with formState.
+		// Maps keys from credit card validator to work with
 		return mapKeys( validationResult.errors, ( value, key ) => {
 			return camelCase( key );
 		} );
@@ -236,7 +236,7 @@ const CreditCardForm = createReactClass( {
 
 	getCardDetails() {
 		// Maps keys from formState to work with CreditCardFormFields component and credit card validator.
-		return mapKeys( formState.getAllFieldValues( this.state.form ), ( value, key ) => {
+		return mapKeys( getAllFieldValues( this.state.form ), ( value, key ) => {
 			return kebabCase( key );
 		} );
 	},

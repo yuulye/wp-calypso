@@ -38,7 +38,17 @@ import PaymentBox from './payment-box';
 import { cartItems } from 'lib/cart-values';
 import { forDomainRegistrations as countriesList } from 'lib/countries-list';
 import analytics from 'lib/analytics';
-import formState from 'lib/form-state';
+import {
+	Controller,
+	getAllFieldValues,
+	getErrorMessages,
+	getFieldErrorMessages,
+	getFieldValue,
+	getInvalidFields,
+	isFieldDisabled,
+	isFieldInvalid,
+	isSubmitButtonDisabled,
+} from 'lib/form-state';
 import {
 	addPrivacyToAllDomains,
 	removePrivacyFromAllDomains,
@@ -100,7 +110,7 @@ export class DomainDetailsForm extends PureComponent {
 	}
 
 	componentWillMount() {
-		this.formStateController = formState.Controller( {
+		this.formStateController = Controller( {
 			fieldNames: this.fieldNames,
 			loadFunction: this.loadFormStateFromRedux,
 			sanitizerFunction: this.sanitize,
@@ -120,8 +130,8 @@ export class DomainDetailsForm extends PureComponent {
 	}
 
 	componentDidUpdate( prevProps, prevState ) {
-		const previousFormValues = formState.getAllFieldValues( prevState.form );
-		const currentFormValues = formState.getAllFieldValues( this.state.form );
+		const previousFormValues = getAllFieldValues( prevState.form );
+		const currentFormValues = getAllFieldValues( this.state.form );
 		if ( ! isEqual( previousFormValues, currentFormValues ) ) {
 			this.props.updateContactDetailsCache( this.getMainFieldValues() );
 		}
@@ -235,7 +245,7 @@ export class DomainDetailsForm extends PureComponent {
 				hideError: true,
 			} );
 
-			if ( value && ! formState.getFieldValue( this.state.form, 'phone' ) ) {
+			if ( value && ! getFieldValue( this.state.form, 'phone' ) ) {
 				this.setState( {
 					phoneCountryCode: value,
 				} );
@@ -266,7 +276,7 @@ export class DomainDetailsForm extends PureComponent {
 	};
 
 	getMainFieldValues() {
-		const mainFieldValues = formState.getAllFieldValues( this.state.form );
+		const mainFieldValues = getAllFieldValues( this.state.form );
 		return {
 			...mainFieldValues,
 			phone: toIcannFormat( mainFieldValues.phone, countries[ this.state.phoneCountryCode ] ),
@@ -295,14 +305,14 @@ export class DomainDetailsForm extends PureComponent {
 			name,
 			...ref,
 			additionalClasses: 'checkout-field',
-			value: formState.getFieldValue( form, name ) || '',
-			isError: formState.isFieldInvalid( form, name ),
-			disabled: formState.isFieldDisabled( form, name ),
+			value: getFieldValue( form, name ) || '',
+			isError: isFieldInvalid( form, name ),
+			disabled: isFieldDisabled( form, name ),
 			onChange: this.handleChangeEvent,
 			// The keys are mapped to snake_case when going to API and camelCase when the response is parsed and we are using
 			// kebab-case for HTML, so instead of using different variations all over the place, this accepts kebab-case and
-			// converts it to camelCase which is the format stored in the formState.
-			errorMessage: ( formState.getFieldErrorMessages( form, camelCase( name ) ) || [] ).join(
+			// converts it to camelCase which is the format stored in the
+			errorMessage: ( getFieldErrorMessages( form, camelCase( name ) ) || [] ).join(
 				'\n'
 			),
 			eventFormName: 'Checkout Form',
@@ -348,7 +358,7 @@ export class DomainDetailsForm extends PureComponent {
 				checkPrivacyRadio={ this.allDomainItemsHavePrivacy() }
 				cart={ this.props.cart }
 				countriesList={ countriesList }
-				disabled={ formState.isSubmitButtonDisabled( this.state.form ) }
+				disabled={ isSubmitButtonDisabled( this.state.form ) }
 				fields={ this.state.form }
 				onCheckboxChange={ this.handleCheckboxChange }
 				onRadioSelect={ this.handleRadioChange }
@@ -467,7 +477,7 @@ export class DomainDetailsForm extends PureComponent {
 	};
 
 	focusFirstError() {
-		const firstErrorName = kebabCase( head( formState.getInvalidFields( this.state.form ) ).name );
+		const firstErrorName = kebabCase( head( getInvalidFields( this.state.form ) ).name );
 		const firstErrorRef = this.inputRefs[ firstErrorName ] || this.refs[ firstErrorName ];
 
 		try {
@@ -527,9 +537,9 @@ export class DomainDetailsForm extends PureComponent {
 
 	recordSubmit() {
 		const { contactDetails } = this.props;
-		const errors = formState.getErrorMessages( this.state.form );
+		const errors = getErrorMessages( this.state.form );
 		const tracksEventObject = reduce(
-			formState.getErrorMessages( this.state.form ),
+			getErrorMessages( this.state.form ),
 			( result, value, key ) => {
 				result[ `error_${ key }` ] = value;
 				return result;

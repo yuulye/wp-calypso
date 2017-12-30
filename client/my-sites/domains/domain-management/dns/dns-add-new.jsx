@@ -23,7 +23,13 @@ import FormSelect from 'components/forms/form-select';
 import MxRecord from './mx-record';
 import TxtRecord from './txt-record';
 import SrvRecord from './srv-record';
-import formState from 'lib/form-state';
+import {
+	Controller,
+	getAllFieldValues,
+	hasErrors,
+	isFieldInvalid,
+	isSubmitButtonDisabled,
+} from 'lib/form-state';
 import { errorNotice, successNotice } from 'state/notices/actions';
 import * as upgradesActions from 'lib/upgrades/actions';
 import { validateAllFields, getNormalizedData } from 'lib/domains/dns';
@@ -61,7 +67,7 @@ class DnsAddNew extends React.Component {
 	}
 
 	componentWillMount() {
-		this.formStateController = formState.Controller( {
+		this.formStateController = Controller( {
 			initialFields: this.getFieldsForType( this.state.type ),
 			onNewState: this.setFormState,
 			validatorFunction: ( fieldValues, onComplete ) => {
@@ -86,7 +92,7 @@ class DnsAddNew extends React.Component {
 			}
 
 			const normalizedData = getNormalizedData(
-				formState.getAllFieldValues( this.state.fields ),
+				getAllFieldValues( this.state.fields ),
 				this.props.selectedDomainName
 			);
 			this.formStateController.resetFields( this.getFieldsForType( this.state.type ) );
@@ -128,7 +134,7 @@ class DnsAddNew extends React.Component {
 			return true;
 		}
 
-		return ! formState.isFieldInvalid( this.state.fields, fieldName );
+		return ! isFieldInvalid( this.state.fields, fieldName );
 	};
 
 	recordFields() {
@@ -138,7 +144,7 @@ class DnsAddNew extends React.Component {
 					key={ showTypes.join( ',' ) }
 					selectedDomainName={ this.props.selectedDomainName }
 					show={ includes( showTypes, this.state.fields.type.value ) }
-					fieldValues={ formState.getAllFieldValues( this.state.fields ) }
+					fieldValues={ getAllFieldValues( this.state.fields ) }
 					isValid={ this.isValid }
 					onChange={ this.onChange }
 				/>
@@ -151,9 +157,9 @@ class DnsAddNew extends React.Component {
 		const dnsRecordTypes = flatMap( this.recordTypes, record => record[ 1 ] );
 		const options = dnsRecordTypes.map( type => <option key={ type }>{ type }</option> );
 		const isSubmitDisabled =
-			formState.isSubmitButtonDisabled( this.state.fields ) ||
+			isSubmitButtonDisabled( this.state.fields ) ||
 			this.props.isSubmittingForm ||
-			formState.hasErrors( this.state.fields );
+			hasErrors( this.state.fields );
 
 		return (
 			<form className="dns__add-new">

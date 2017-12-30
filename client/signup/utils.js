@@ -13,7 +13,7 @@ import i18nUtils from 'lib/i18n-utils';
 import steps from 'signup/config/steps';
 import flows from 'signup/config/flows';
 import { defaultFlowName } from 'signup/config/flows';
-import formState from 'lib/form-state';
+import { getFieldValue } from 'lib/form-state';
 import userFactory from 'lib/user';
 const user = userFactory();
 
@@ -118,7 +118,7 @@ function getValueFromProgressStore( { signupProgress, stepName, fieldName } ) {
 }
 
 function mergeFormWithValue( { form, fieldName, fieldValue } ) {
-	if ( ! formState.getFieldValue( form, fieldName ) ) {
+	if ( ! getFieldValue( form, fieldName ) ) {
 		return merge( form, {
 			[ fieldName ]: { value: fieldValue },
 		} );

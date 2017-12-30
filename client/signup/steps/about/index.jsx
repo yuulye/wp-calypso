@@ -13,7 +13,7 @@ import classNames from 'classnames';
  */
 import StepWrapper from 'signup/step-wrapper';
 import SignupActions from 'lib/signup/actions';
-import formState from 'lib/form-state';
+import { Controller, getFieldValue } from 'lib/form-state';
 import { setSiteTitle } from 'state/signup/steps/site-title/actions';
 import { setDesignType } from 'state/signup/steps/design-type/actions';
 import { getSiteTitle } from 'state/signup/steps/site-title/selectors';
@@ -58,7 +58,7 @@ class AboutStep extends Component {
 	}
 
 	componentWillMount() {
-		this.formStateController = new formState.Controller( {
+		this.formStateController = new Controller( {
 			fieldNames: [ 'siteTitle', 'siteGoals', 'siteTopic' ],
 			validatorFunction: noop,
 			onNewState: this.setFormState,
@@ -195,7 +195,7 @@ class AboutStep extends Component {
 	};
 
 	checkBoxHandleChange = event => {
-		const fieldValue = formState.getFieldValue( this.state.form, 'siteGoals' );
+		const fieldValue = getFieldValue( this.state.form, 'siteGoals' );
 		const valuesArray = fieldValue ? fieldValue.split( ',' ) : [];
 
 		if ( valuesArray.indexOf( event.target.value ) === -1 ) {
@@ -250,11 +250,11 @@ class AboutStep extends Component {
 			siteTitleValue = 'Site Title';
 
 		//Inputs
-		const siteTitleInput = formState.getFieldValue( this.state.form, 'siteTitle' );
-		const siteGoalsInput = formState.getFieldValue( this.state.form, 'siteGoals' );
+		const siteTitleInput = getFieldValue( this.state.form, 'siteTitle' );
+		const siteGoalsInput = getFieldValue( this.state.form, 'siteGoals' );
 		const siteGoalsArray = siteGoalsInput.split( ',' );
 		const userExperienceInput = this.state.userExperience;
-		const siteTopicInput = formState.getFieldValue( this.state.form, 'siteTopic' );
+		const siteTopicInput = getFieldValue( this.state.form, 'siteTopic' );
 
 		//Site Title
 		if ( siteTitleInput !== '' ) {

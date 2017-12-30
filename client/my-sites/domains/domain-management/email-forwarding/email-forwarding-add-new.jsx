@@ -22,7 +22,7 @@ import FormLabel from 'components/forms/form-label';
 import FormTextInput from 'components/forms/form-text-input';
 import FormTextInputWithAffixes from 'components/forms/form-text-input-with-affixes';
 import FormInputValidation from 'components/forms/form-input-validation';
-import formState from 'lib/form-state';
+import { Controller, getAllFieldValues, isFieldInvalid } from 'lib/form-state';
 import analyticsMixin from 'lib/mixins/analytics';
 import notices from 'notices';
 import * as upgradesActions from 'lib/upgrades/actions';
@@ -47,7 +47,7 @@ const EmailForwardingAddNew = createReactClass( {
 	},
 
 	componentWillMount() {
-		this.formStateController = formState.Controller( {
+		this.formStateController = Controller( {
 			initialFields: this.getInitialState().fields,
 			onNewState: this.setFormState,
 			validatorFunction: ( fieldValues, onComplete ) => {
@@ -84,7 +84,7 @@ const EmailForwardingAddNew = createReactClass( {
 				return;
 			}
 
-			const { mailbox, destination } = formState.getAllFieldValues( this.state.fields );
+			const { mailbox, destination } = getAllFieldValues( this.state.fields );
 
 			upgradesActions.addEmailForwarding(
 				this.props.selectedDomainName,
@@ -197,7 +197,7 @@ const EmailForwardingAddNew = createReactClass( {
 			} ),
 			isValidMailbox = this.isValid( 'mailbox' ),
 			isValidDestination = this.isValid( 'destination' ),
-			{ mailbox, destination } = formState.getAllFieldValues( this.state.fields );
+			{ mailbox, destination } = getAllFieldValues( this.state.fields );
 
 		return (
 			<div className="form-content">
@@ -288,7 +288,7 @@ const EmailForwardingAddNew = createReactClass( {
 	},
 
 	isValid( fieldName ) {
-		return ! formState.isFieldInvalid( this.state.fields, fieldName );
+		return ! isFieldInvalid( this.state.fields, fieldName );
 	},
 
 	handleFieldFocus( fieldName ) {
