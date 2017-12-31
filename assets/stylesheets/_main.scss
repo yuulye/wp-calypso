@@ -226,7 +226,7 @@ th {
 	font-weight: 600;
 }
 
-.hide, .hidden { display: none; }
+.hide, .hidden { display: none !important; }
 
 /* Links */
 a,

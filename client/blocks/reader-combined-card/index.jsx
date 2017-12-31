@@ -85,8 +85,76 @@ class ReaderCombinedCard extends React.Component {
 		const followUrl = ( feed && feed.URL ) || ( site && site.URL );
 		const mediaCount = filter( posts, post => ! isEmpty( post.canonical_media ) ).length;
 
+		var white = [
+			74221510,
+			69435401,
+			68672991,
+			40806253,
+			36495360,
+			73453524,
+			63006096,
+			73868163,
+			65985495,
+			24986611,
+			71666708,
+			67681209,
+			72190224,
+			382486,
+			33336689,
+			76555404,
+			61094332,
+			76004000,
+			75634817,
+			71725908,
+			59180997,
+			76045835,
+			72732533,
+			73929580,
+			69922209,
+			74672960,
+			68464086,
+			76141811,
+			52949380,
+			59459306,
+			46544872,
+			68804394,
+			69419855,
+			64756695,
+			59654271,
+			68821911,
+			75424596,
+			70129411,
+			66756476,
+			35170000,
+			46338578,
+			74005977,
+			76665336,
+			76122503,
+			76221427,
+			69840324,
+			66565216,
+			68666696,
+			75255412,
+		];
+
+		var found = false;
+		if ( feed && feed.feed_ID ) {
+			for ( var i = 0; i < white.length; i++ ) {
+				if ( white[ i ] == feed.feed_ID ) {
+					found = true;
+					break;
+				}
+			}
+		}
+
+		var newClasses = 'reader-combined-card';
+		if ( ! found ) {
+			newClasses += ' hidden';
+		}
+
+		// return false;
 		return (
-			<Card className="reader-combined-card">
+			<Card className={ newClasses }>
 				<header className="reader-combined-card__header">
 					<ReaderAvatar
 						siteIcon={ siteIcon }

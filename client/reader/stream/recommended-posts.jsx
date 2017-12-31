@@ -68,7 +68,7 @@ export class RecommendedPosts extends React.PureComponent {
 
 	render() {
 		return (
-			<div className="reader-stream__recommended-posts">
+			<div className="reader-stream__recommended-posts hidden">
 				<h1 className="reader-stream__recommended-posts-header">
 					<Gridicon icon="thumbs-up" size={ 18 } />
 					&nbsp;

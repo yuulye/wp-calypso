@@ -42,23 +42,23 @@ class PostPhoto extends React.Component {
 	 */
 	getMaxPhotoHeight = () => this.getViewportHeight() - 176;
 
-	setCardWidth = () => {
-		if ( this.widthDivRef ) {
-			const cardWidth = this.widthDivRef.getClientRects()[ 0 ].width;
-			if ( cardWidth > 0 ) {
-				this.setState( { cardWidth } );
-			}
-		}
-	};
+	// setCardWidth = () => {
+	// 	if ( this.widthDivRef ) {
+	// 		const cardWidth = this.widthDivRef.getClientRects()[ 0 ].width;
+	// 		if ( cardWidth > 0 ) {
+	// 			this.setState( { cardWidth } );
+	// 		}
+	// 	}
+	// };
 
 	handleWidthDivLoaded = ref => {
 		this.widthDivRef = ref;
 	};
 
-	componentDidMount() {
-		this.resizeListener = window.addEventListener( 'resize', debounce( this.setCardWidth, 50 ) );
-		this.setCardWidth();
-	}
+	// componentDidMount() {
+	// 	this.resizeListener = window.addEventListener( 'resize', debounce( this.setCardWidth, 50 ) );
+	// 	this.setCardWidth();
+	// }
 
 	componentWillUnmount() {
 		window.removeEventListener( 'resize', this.resizeListener );
